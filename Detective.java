@@ -8,7 +8,9 @@ public class Detective extends Character{
     public Detective(String name,
                      Room startingRoom,
                      Item ... items) {
-        super(name,startingRoom);
+
+        super(name, startingRoom);
+
         inventory = new ArrayList<>();
         for (Item item : items) {
             inventory.add(item);
@@ -17,6 +19,10 @@ public class Detective extends Character{
 
     public ArrayList<Item> getInventory(){
         return inventory;
+    }
+
+    public void inventoryAdd(Item item ){
+        inventory.add(item);
     }
 
     public String getInvetoryNames(){
@@ -82,6 +88,11 @@ public class Detective extends Character{
         }
         if (!found)
             System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
+    }
+
+    @Override
+    public void getDescription() {
+        System.out.println("Brief Description: ");
     }
 
 }

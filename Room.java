@@ -6,7 +6,6 @@ public class Room {
     private String description;
     private Map<String, Room> exits;// Map direction to neighboring Room
     private ArrayList<Item>  itemsList;
-    private ArrayList<String> itemsNames;
 
 
 
@@ -39,6 +38,8 @@ public class Room {
   public ArrayList<Item> getItems(){
         return itemsList;
   }
+
+
 
     public String getItemsNames() {
         StringBuilder sb = new StringBuilder();

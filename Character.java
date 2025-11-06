@@ -1,4 +1,4 @@
-public class Character {
+public abstract class Character {
     private String name;
     protected Room currentRoom;
 
@@ -8,6 +8,8 @@ public class Character {
         this.currentRoom = startingRoom;
     }
 
+
+    public abstract void getDescription();
     //getters
     public String getName() {
         return name;
