@@ -1,14 +1,21 @@
-public abstract class Witness extends Character {
+public abstract class Witness  {
     private String victimRelationship;
-    private String information;
-    private int trustLevel;
 
-    public Witness(String name, Room currentRoom ,String victimRelationship, String information,
+    private int trustLevel;
+    private String name;
+
+    public Witness(String name,String victimRelationship,
                    int trustLevel) {
-        super(name,currentRoom);
+        this.name = name;
         this.victimRelationship = victimRelationship;
-        this.information = information;
         this.trustLevel = trustLevel;
+    }
+
+    public String getName() {
+        return name;
+    }
+    public String getVictimRelationship() {
+        return victimRelationship;
     }
 
 

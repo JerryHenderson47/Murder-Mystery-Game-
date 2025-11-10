@@ -6,20 +6,36 @@ public class Room {
     private String description;
     private Map<String, Room> exits;// Map direction to neighboring Room
     private ArrayList<Item>  itemsList;
+    private Witness witness;
 
 
 
         //constructor that allows you to add a description and any number of items to a room object
     public Room(String description,
-                Item... items) {
+                Item... items
+                ) {
         this.description = description;
         exits = new HashMap<>();
+
+
 
         itemsList = new ArrayList<>();
         for (Item item : items) {
             itemsList.add(item);
         }
     }
+
+    public Room(String description, Witness witness, Item... items) {
+
+        this(description,items);
+
+        this.witness = witness;
+
+    }
+
+
+
+
 
     public void checkItems(Detective currentPlayer){
         itemsList.removeIf(item -> currentPlayer.getInventory().contains(item)); // need to research this
@@ -44,7 +60,7 @@ public class Room {
     public String getItemsNames() {
         StringBuilder sb = new StringBuilder();
         for (Item item : itemsList) {
-            sb.append(item.getName()).append(" ");
+            sb.append(item.getName()).append(" ,");
         }
         return sb.toString().trim();
   }

@@ -1,10 +1,12 @@
 public abstract class ItemWitness extends Witness{
     private Item requiredItem;
+    private String information;
 
-    public ItemWitness(String name, Room currentRoom ,
-                         String victimRelationship, String information,
+    public ItemWitness(String name, String victimRelationship,
+                       String information,
                          int trustLevel, Item requiredItem){
-        super(name, currentRoom, victimRelationship, information, trustLevel);
+        super(name, victimRelationship, trustLevel);
+        this.information = information;
         this.requiredItem = requiredItem;
     }
 

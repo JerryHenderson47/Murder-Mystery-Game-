@@ -1,10 +1,12 @@
 public abstract class PuzzleWItness extends Witness {
     public String puzzleName;
 
-    public PuzzleWItness(String name, Room currentRoom ,
-                         String victimRelationship, String information,
+    public PuzzleWItness(String name,
+                         String victimRelationship,
                          int trustLevel, String puzzleName){
-        super(name, currentRoom, victimRelationship, information, trustLevel);
+        super(name,  victimRelationship,  trustLevel);
+
+
         this.puzzleName = puzzleName;
     }
 

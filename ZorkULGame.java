@@ -31,11 +31,17 @@ public class ZorkULGame {
         Item mouse = new Item("Mouse","Small black and wireless");
         Item laptop = new Item("Laptop","large 16 inch screen Hp");
 
+        AmnesiaItem memory3 = new AmnesiaItem("Door Handle", "Small goldish colour, broke off door", "He broke the door handle", 3);
+
+        AmnesiaWitness witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Remember",
+                memory3 );
+
+
         // create rooms
         outside = new Room("outside the main entrance of the university");
         theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab",mouse,laptop);
+        lab = new Room("in a computing lab",witness1,mouse,laptop);
         office = new Room("in the computing admin office");
 
 
@@ -58,6 +64,12 @@ public class ZorkULGame {
 
         // create the player character and start outside
         player = new Detective("player", outside);
+    }
+
+    public void createAmnesiaWitness(){
+
+
+
     }
 
     public void play() {
@@ -142,7 +154,7 @@ public class ZorkULGame {
     public static void main(String[] args) {
         ZorkULGame game = new ZorkULGame();
         GUI gui = new GUI();
-        gui.showGUI();
+       // gui.showGUI();
         game.play();
 
     }

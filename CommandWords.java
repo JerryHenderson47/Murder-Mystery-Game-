@@ -13,6 +13,7 @@ public class CommandWords {
         validCommands.put("eat", "Eat something");
         validCommands.put("pick", "Pick up something");
         validCommands.put("place", "Place an item");
+        validCommands.put("give","Give an item to another character");
     }
 
     public boolean isCommand(String commandWord) {
