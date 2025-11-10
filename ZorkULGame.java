@@ -141,6 +141,9 @@ public class ZorkULGame {
 
     public static void main(String[] args) {
         ZorkULGame game = new ZorkULGame();
+        GUI gui = new GUI();
+        gui.showGUI();
         game.play();
+
     }
 }
