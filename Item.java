@@ -1,40 +1,13 @@
-public class Item {
-    private String description;
-    private String name;
-//    private String location;
+import java.io.Serializable;
 
-    public Item(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
+public interface Item extends Serializable {
 
+    public abstract String getDescription();
 
-    // all getters and setters
-    public String getDescription() {
-        return description;
-    }
+    public abstract void setDescription(String description);
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public abstract String getName();
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-//    public String getLocation() {
-//        return location;
-//    }
-//
-//    public void setLocation(String location) {
-//        this.location = location;
-//    }
-
-
-
+    public abstract void setName(String name);
 
 }

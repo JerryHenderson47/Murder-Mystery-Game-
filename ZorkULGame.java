@@ -14,10 +14,12 @@ emphasizing exploration and simple command-driven gameplay
 */
 
 import java.util.Scanner;
+import java.io.*;
 
 public class ZorkULGame {
     private Parser parser;
     private Detective player;
+    private AmnesiaWitness witness1;
 
     public ZorkULGame() {
         createRooms();
@@ -25,54 +27,71 @@ public class ZorkULGame {
     }
 
     private void createRooms() {
-        Room outside, theatre, pub, lab, office;
+        Room outside, theatre, pub, study, office;
 
-        //computer lab items
-        Item mouse = new Item("Mouse","Small black and wireless");
-        Item laptop = new Item("Laptop","large 16 inch screen Hp");
+
 
         AmnesiaItem memory3 = new AmnesiaItem("Door Handle", "Small goldish colour, broke off door", "He broke the door handle", 3);
+        AmnesiaItem memory1 = new AmnesiaItem("Shoe", "Blood Stained runner", "He came in and tried to clean his shoe",1);
 
-        AmnesiaWitness witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Remember",
-                memory3 );
+         witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Remember");
 
 
         // create rooms
         outside = new Room("outside the main entrance of the university");
         theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
-        lab = new Room("in a computing lab",witness1,mouse,laptop);
+        study = new Room("in the houses study", witness1,memory1, memory3);
         office = new Room("in the computing admin office");
 
 
         // initialise room exits
         outside.setExit("east", theatre);
-        outside.setExit("south", lab);
+        outside.setExit("south", study);
         outside.setExit("west", pub);
 
         theatre.setExit("west", outside);
 
         pub.setExit("east", outside);
 
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
+        study.setExit("north", outside);
+        study.setExit("east", office);
 
-        office.setExit("west", lab);
+        office.setExit("west", study);
 
 
 
 
         // create the player character and start outside
         player = new Detective("player", outside);
-    }
-
-    public void createAmnesiaWitness(){
-
-
 
     }
+
+    private void serialize(){
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("player.ser"))) {
+            out.writeObject(player);
+            System.out.println("Object has been serialized to player.ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void deserialize(){
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("player.ser"))) {
+            Detective deserializedPerson = (Detective) in.readObject();
+            System.out.println("Object has been deserialized:");
+            deserializedPerson.getDescription();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
     public void play() {
+        deserialize();
         printWelcome();
 
         boolean finished = false;
@@ -81,6 +100,7 @@ public class ZorkULGame {
             finished = processCommand(command);
         }
         System.out.println("Thank you for playing. Goodbye.");
+        serialize();
     }
 
     private void printWelcome() {
@@ -120,6 +140,17 @@ public class ZorkULGame {
             case "place":
                 player.placeItem();
                 break;
+            case "talk":
+                if(player.getCurrentRoom().hasWitness())
+                    player.getCurrentRoom().getWitness().interact();
+                else System.out.println("I don't understand your command...");
+                break;
+            case "give":
+                player.giveItem();
+                break;
+            case "play":
+                witness1.sortMemories();
+                break;
             default:
                 System.out.println("I don't know what you mean...");
                 break;
@@ -147,6 +178,7 @@ public class ZorkULGame {
             System.out.println("There is no door!");
         } else {
             player.setCurrentRoom(nextRoom);
+
             System.out.println(player.getCurrentRoom().getLongDescription());
         }
     }

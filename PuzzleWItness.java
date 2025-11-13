@@ -11,5 +11,7 @@ public abstract class PuzzleWItness extends Witness {
     }
 
 
-    public abstract void playPuzzle();
+    public abstract void interact();
+   public abstract void addToInventory(Item item);
+    public abstract String getInventoryNames();
 }

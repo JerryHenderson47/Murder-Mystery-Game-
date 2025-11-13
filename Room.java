@@ -1,12 +1,14 @@
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
 
-public class Room {
+public class Room implements Serializable {
     private String description;
     private Map<String, Room> exits;// Map direction to neighboring Room
     private ArrayList<Item>  itemsList;
     private Witness witness;
+    private boolean hasWitness;
 
 
 
@@ -17,7 +19,7 @@ public class Room {
         this.description = description;
         exits = new HashMap<>();
 
-
+        hasWitness = false;
 
         itemsList = new ArrayList<>();
         for (Item item : items) {
@@ -30,6 +32,8 @@ public class Room {
         this(description,items);
 
         this.witness = witness;
+
+        hasWitness = true;
 
     }
 
@@ -45,13 +49,15 @@ public class Room {
         itemsList.add(item);
     }
 
+    public boolean hasWitness(){
+        return hasWitness;
+    }
 
+    public Witness getWitness() {
+        return witness;
+    }
 
-
-
-
-
-  public ArrayList<Item> getItems(){
+    public ArrayList<Item> getItems(){
         return itemsList;
   }
 
@@ -60,7 +66,7 @@ public class Room {
     public String getItemsNames() {
         StringBuilder sb = new StringBuilder();
         for (Item item : itemsList) {
-            sb.append(item.getName()).append(" ,");
+            sb.append(item.getName()).append("|");
         }
         return sb.toString().trim();
   }
@@ -93,7 +99,10 @@ public class Room {
 
     // gives the player a sentence
     public String getLongDescription() {
-        return "You are " + description + ".\nExits: " + getExitString() + "\nItems: " + getItemsNames();
+        if (hasWitness)
+            return "You are " + description + ".\nExits: " + getExitString() + "\nItems: " + getItemsNames() +"\nA witness called " + witness.getName();
+        else
+            return "You are " + description + ".\nExits: " + getExitString() + "\nItems: " + getItemsNames();
 
     }
 }

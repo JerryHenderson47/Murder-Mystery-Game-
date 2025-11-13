@@ -14,6 +14,12 @@ public class CommandWords {
         validCommands.put("pick", "Pick up something");
         validCommands.put("place", "Place an item");
         validCommands.put("give","Give an item to another character");
+        validCommands.put("talk","talk to another character");
+
+        //Amnesia witness game
+        validCommands.put("play", "play the witness's game");
+        validCommands.put("switch", "Switch a memory with another memory");
+
     }
 
     public boolean isCommand(String commandWord) {

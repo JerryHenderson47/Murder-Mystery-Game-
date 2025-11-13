@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.*;
 
-public class Detective extends Character{
+public class Detective extends Character implements Serializable {
 
-    ArrayList<Item> inventory; // creates the detectives inventory
+    private ArrayList<Item> inventory;// creates the detectives inventory
+
+
 
     public Detective(String name,
                      Room startingRoom,
@@ -21,9 +24,6 @@ public class Detective extends Character{
         return inventory;
     }
 
-    public void inventoryAdd(Item item ){
-        inventory.add(item);
-    }
 
     public String getInvetoryNames(){
 
@@ -47,6 +47,8 @@ public class Detective extends Character{
         }
     }
 
+
+    //pick up an item in a room
     public void pickUpItem(){
         Scanner scan = new Scanner(System.in);
 
@@ -70,6 +72,8 @@ public class Detective extends Character{
 
     }
 
+
+    // function to place an item
     public void placeItem(){
         Scanner scan = new Scanner(System.in);
 
@@ -89,6 +93,37 @@ public class Detective extends Character{
         if (!found)
             System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
     }
+
+    public void giveItem(){
+        Scanner scan = new Scanner(System.in);
+
+        System.out.println("Inventory: " + getInvetoryNames());
+        System.out.println("What item: ");
+        String choice = scan.nextLine().toLowerCase().trim();
+        boolean found = false;
+        for (Item item : inventory) { //cycles through inventory and checks if the choice matches
+
+            if (item.getName().toLowerCase().equals(choice)) {
+                System.out.println(item.getName() + " given to " + currentRoom.getWitness().getName());
+                inventory.remove(item);
+                found = true;
+
+                // add to witness inventory
+                currentRoom.getWitness().addToInventory(item);
+                if (item instanceof AmnesiaItem){
+                    System.out.println("Oh I remember,");
+                    System.out.println(((AmnesiaItem)item).getAttachedMemory());
+                }
+                break;
+
+            }
+
+        }
+        if (!found)
+            System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
+    }
+
+
 
     @Override
     public void getDescription() {
