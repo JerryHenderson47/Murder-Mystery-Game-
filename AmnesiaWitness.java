@@ -4,20 +4,17 @@ import java.util.*;
 public class AmnesiaWitness extends PuzzleWItness {
     Scanner scan = new  Scanner(System.in);
     private ArrayList<AmnesiaItem> memoryItems;
+    private ArrayList<Item> inventory;
 
     public AmnesiaWitness(String name,
                           String victimRelationship,
-                          int trustLevel, String puzzleName,
-                          AmnesiaItem... items
+                          int trustLevel, String puzzleName
                           ) {
 
         super(name, victimRelationship, trustLevel, puzzleName); // witness constructor
 
-
         memoryItems = new ArrayList();
-//        for (AmnesiaItem item : items) {
-//            this.memoryItems.add(item); // takes in an item and allows you to add it to the hashmaps cleanly, allows you to make multiple differnt Amnesia wintesses
-//        }
+
     }
 
 
@@ -36,6 +33,10 @@ public class AmnesiaWitness extends PuzzleWItness {
         }
         return sb.toString().trim();
 
+    }
+
+    public ArrayList<Item> getInventory(){
+        return inventory;
     }
 
 
@@ -80,9 +81,14 @@ public class AmnesiaWitness extends PuzzleWItness {
            System.out.println();
 
            AmnesiaItem holder = memoryItems.get(choice2); // creates a holder so that the choice2 variable remains
+           try {
+               memoryItems.set(choice2, memoryItems.get(choice1));// sets choice1 to the index of choice 2
+               memoryItems.set(choice1, holder); //completes the swap
+           }
+           catch (ArrayIndexOutOfBoundsException e) {
+               System.out.println("Invalid choice");
 
-           memoryItems.set(choice2, memoryItems.get(choice1));// sets choice1 to the index of choice 2
-           memoryItems.set(choice1, holder); //completes the swap
+           }
 
 
 

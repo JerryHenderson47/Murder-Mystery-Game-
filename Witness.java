@@ -23,6 +23,7 @@ public abstract class Witness  {
     public String getVictimRelationship() {
         return victimRelationship;
     }
+    public abstract ArrayList<Item> getInventory();
 
   public abstract void addToInventory(Item item);
 

@@ -27,30 +27,39 @@ public class ZorkULGame {
     }
 
     private void createRooms() {
-        Room outside, theatre, pub, study, office;
+        Room outside, childBedroom, pub, study, office;
 
 
+        //Create the Study
+        AmnesiaItem memory1 = new AmnesiaItem(Text.memoryItem1Name, Text.memoryItem1Description, Text.memoryItem1Story,1);
+        AmnesiaItem memory2 = new AmnesiaItem(Text.memoryItem2Name, Text.memoryItem2Description, Text.memoryItem2Story,2);
+        AmnesiaItem memory3 = new AmnesiaItem(Text.memoryItem3Name, Text.memoryItem3Description, Text.memoryItem3Story,3);
+        AmnesiaItem memory4 = new AmnesiaItem(Text.memoryItem4Name, Text.memoryItem4Description, Text.memoryItem4Story,4);
+        AmnesiaItem memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
 
-        AmnesiaItem memory3 = new AmnesiaItem("Door Handle", "Small goldish colour, broke off door", "He broke the door handle", 3);
-        AmnesiaItem memory1 = new AmnesiaItem("Shoe", "Blood Stained runner", "He came in and tried to clean his shoe",1);
 
-         witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Remember");
+         witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Amnesia");
+
+        study = new Room(Text.studyDescription, witness1,memory1,memory2,memory3,memory4,memory5);
+
+        // create the child bedroom
+        HidingSpot spot1 = new HidingSpot(Text.hidingSpot1Name,Text.hidingSpot1Description, 1);
+
+        childBedroom = new Room(Text.childBedroomDescription);
 
 
         // create rooms
         outside = new Room("outside the main entrance of the university");
-        theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
-        study = new Room("in the houses study", witness1,memory1, memory3);
         office = new Room("in the computing admin office");
 
 
         // initialise room exits
-        outside.setExit("east", theatre);
+        outside.setExit("east", childBedroom);
         outside.setExit("south", study);
         outside.setExit("west", pub);
 
-        theatre.setExit("west", outside);
+        childBedroom.setExit("west", outside);
 
         pub.setExit("east", outside);
 

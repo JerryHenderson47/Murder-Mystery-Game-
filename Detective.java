@@ -29,7 +29,7 @@ public class Detective extends Character implements Serializable {
 
             StringBuilder sb = new StringBuilder();
             for (Item item : inventory) {
-                sb.append(item.getName()).append(" ");
+                sb.append(item.getName()).append("|");
             }
             return sb.toString().trim();
 
@@ -51,7 +51,7 @@ public class Detective extends Character implements Serializable {
     //pick up an item in a room
     public void pickUpItem(){
         Scanner scan = new Scanner(System.in);
-
+        System.out.println("Itmes: " + currentRoom.getItemsNames());
         System.out.println("What item: ");
         String choice = scan.nextLine().toLowerCase().trim();
         boolean found = false;
