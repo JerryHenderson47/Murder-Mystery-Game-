@@ -7,15 +7,27 @@ public class AmnesiaWitness extends PuzzleWItness {
     private ArrayList<Item> inventory;
 
     public AmnesiaWitness(String name,
-                          String victimRelationship,
-                          int trustLevel, String puzzleName
+                          String victimRelationship, String information,
+                          int trustLevel,
+                          String puzzleName, String description
                           ) {
 
-        super(name, victimRelationship, trustLevel, puzzleName); // witness constructor
-
+        super(name,victimRelationship,information, trustLevel,puzzleName,description);
         memoryItems = new ArrayList();
 
     }
+
+
+    //getters an setters
+    public ArrayList<AmnesiaItem> getMemoryItems(){
+        return memoryItems;
+    }
+
+    public void setMemoryItems(ArrayList<AmnesiaItem> memoryItems){
+        this.memoryItems = memoryItems;
+    }
+
+
 
 
     public void printStory(){
@@ -40,6 +52,8 @@ public class AmnesiaWitness extends PuzzleWItness {
     }
 
 
+
+
     public void addToInventory(Item item ){
         if (item instanceof AmnesiaItem) {
             memoryItems.add((AmnesiaItem)item);
@@ -49,7 +63,8 @@ public class AmnesiaWitness extends PuzzleWItness {
         }
     }
 
-    public void sortMemories(){
+    @Override
+    public void play(){
         boolean puzzleSolved = false;
 
         ArrayList<AmnesiaItem> sortedItems = new ArrayList<>(memoryItems);
@@ -90,18 +105,7 @@ public class AmnesiaWitness extends PuzzleWItness {
 
            }
 
-
-
-
        }
-
-
-
-
-
-
-
-
 
 
     }

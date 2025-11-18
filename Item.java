@@ -1,13 +1,11 @@
 import java.io.Serializable;
 
-public interface Item extends Serializable {
+public abstract class Item extends Thing {
 
-    public abstract String getDescription();
-
-    public abstract void setDescription(String description);
-
-    public abstract String getName();
-
-    public abstract void setName(String name);
-
+    public Item(String name, String description) {
+        super(name, description);
+    }
 }
+
+
+

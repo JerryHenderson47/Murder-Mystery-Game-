@@ -31,5 +31,17 @@ public class Text {
     //Spot  1
     public static final String hidingSpot1Name = "Wardrobe";
     public static final String hidingSpot1Description = "Large dark oak wardrobe going up to ceiling height with a fancy pattern on the doors";
+    // spot 2
+    public static final String hidingSpot2Name = "Behind Curtains";
+    public static final String hidingSpot2Description = "Ceiling to floor, creatively desingned white curtains";
+    //spot 3
+    public static final String hidingSpot3Name = "Under Bed";
+    public static final String hidingSpot3Description = "Large Double bed with lots of room underneath";
+    //spot 4
+    public static final String hidingSpot4Name = "Behind door";
+    public static final String hidingSpot4Description = "Large wooden door opened";
+    // spot 5
+    public static final String hidingSpot5Name = "Outside window";
+    public static final String hidingSpot5Description = "Large open window with a sill that could easily hold a person";
 
 }

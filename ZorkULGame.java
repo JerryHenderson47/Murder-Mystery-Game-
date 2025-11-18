@@ -20,6 +20,7 @@ public class ZorkULGame {
     private Parser parser;
     private Detective player;
     private AmnesiaWitness witness1;
+    private PuzzleWItness witness2;
 
     public ZorkULGame() {
         createRooms();
@@ -38,14 +39,23 @@ public class ZorkULGame {
         AmnesiaItem memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
 
 
-         witness1 = new AmnesiaWitness("Bobby", "grandfather" , 25 , "Amnesia");
+         witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Amnesia","Small old ragged man");
 
         study = new Room(Text.studyDescription, witness1,memory1,memory2,memory3,memory4,memory5);
 
         // create the child bedroom
         HidingSpot spot1 = new HidingSpot(Text.hidingSpot1Name,Text.hidingSpot1Description, 1);
+        HidingSpot spot2 = new HidingSpot(Text.hidingSpot2Name,Text.hidingSpot2Description, 2);
+        HidingSpot spot3 = new HidingSpot(Text.hidingSpot3Name,Text.hidingSpot3Description, 3);
+        HidingSpot spot4 = new HidingSpot(Text.hidingSpot4Name,Text.hidingSpot4Description, 4);
+        HidingSpot spot5 = new HidingSpot(Text.hidingSpot5Name,Text.hidingSpot5Description, 5);
 
-        childBedroom = new Room(Text.childBedroomDescription);
+        witness2 = new HideNSeekWitness("Holly", "child", 15,"HideNSeek", "Small blonde lively girl", "A man walked in and grabbed a knife",spot1,spot2,spot3,spot4,spot5);
+
+
+        childBedroom = new Room(Text.childBedroomDescription,witness2);
+
+
 
 
         // create rooms
@@ -71,8 +81,14 @@ public class ZorkULGame {
 
 
 
+
+
+
+
+
+
         // create the player character and start outside
-        player = new Detective("player", outside);
+        player = new Detective("player","small short and stocky ", outside);
 
     }
 
@@ -158,7 +174,11 @@ public class ZorkULGame {
                 player.giveItem();
                 break;
             case "play":
-                witness1.sortMemories();
+                Witness RoomWitness = player.getCurrentRoom().getWitness();
+                if (RoomWitness instanceof PuzzleWItness){
+                    ((PuzzleWItness) RoomWitness).play();
+                }
+                else System.out.println("There is no game to play in this room :)");
                 break;
             default:
                 System.out.println("I don't know what you mean...");
@@ -194,7 +214,10 @@ public class ZorkULGame {
 
     public static void main(String[] args) {
         ZorkULGame game = new ZorkULGame();
-        GUI gui = new GUI();
+//        GUI gui = new GUI();
+
+
+
        // gui.showGUI();
         game.play();
 

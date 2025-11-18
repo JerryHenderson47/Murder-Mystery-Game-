@@ -3,16 +3,19 @@ import java.util.Scanner;
 import java.io.*;
 
 public class Detective extends Character implements Serializable {
+    Scanner scan = new Scanner(System.in);
 
     private ArrayList<Item> inventory;// creates the detectives inventory
+    private Room currentRoom;
 
 
 
-    public Detective(String name,
-                     Room startingRoom,
+    public Detective(String name, String description,
+                     Room currentRoom,
                      Item ... items) {
 
-        super(name, startingRoom);
+        super(name,description);
+        this.currentRoom = currentRoom;
 
         inventory = new ArrayList<>();
         for (Item item : items) {
@@ -20,19 +23,51 @@ public class Detective extends Character implements Serializable {
         }
     }
 
+
+
+    //getters
+
+
+    public String getDescription() {
+        return "Detective";
+    }
+
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+
+    public void setCurrentRoom(Room room){
+        this.currentRoom = room;
+    }
+
+
+
+    public void interact(){};
+
+
     public ArrayList<Item> getInventory(){
         return inventory;
     }
 
+    // adding and subtracting from arrayList
+    public void addToInventory(Item item){
+        inventory.add(item);
+    }
 
-    public String getInvetoryNames(){
+    public void removeFromInventory(Item item){
+        inventory.remove(item);
+    }
+
+
+    public String getInventoryNames(){
 
             StringBuilder sb = new StringBuilder();
             for (Item item : inventory) {
                 sb.append(item.getName()).append("|");
             }
             return sb.toString().trim();
-
     }
 
 
@@ -50,14 +85,13 @@ public class Detective extends Character implements Serializable {
 
     //pick up an item in a room
     public void pickUpItem(){
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Itmes: " + currentRoom.getItemsNames());
+        System.out.println("Items: " + currentRoom.getItemsNames());
         System.out.println("What item: ");
         String choice = scan.nextLine().toLowerCase().trim();
         boolean found = false;
         for (Item item : currentRoom.getItems()){ //cycles through items and checks if the choice matches
             if (item.getName().toLowerCase().equals(choice)){
-                inventory.add(item);
+                addToInventory(item);
                 System.out.println( item.getName() + " Added to inventory");
                 currentRoom.checkItems(this);
                 found = true;
@@ -73,13 +107,19 @@ public class Detective extends Character implements Serializable {
     }
 
 
+    private String printInventoryDetails(){
+
+        System.out.println("Inventory: " + getInventoryNames());
+        System.out.println("What item: ");
+        return scan.nextLine().toLowerCase().trim();
+
+    }
+
+
     // function to place an item
     public void placeItem(){
-        Scanner scan = new Scanner(System.in);
 
-        System.out.println("Inventory: " + getInvetoryNames());
-        System.out.println("What item: ");
-        String choice = scan.nextLine().toLowerCase().trim();
+       String choice = printInventoryDetails();
         boolean found = false;
         for (Item item : inventory) { //cycles through inventory and checks if the choice matches
             if (item.getName().toLowerCase().equals(choice)) {
@@ -94,18 +134,17 @@ public class Detective extends Character implements Serializable {
             System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
     }
 
-    public void giveItem(){
-        Scanner scan = new Scanner(System.in);
 
-        System.out.println("Inventory: " + getInvetoryNames());
-        System.out.println("What item: ");
-        String choice = scan.nextLine().toLowerCase().trim();
+    // to give an item
+    public void giveItem(){
+
+        String choice = printInventoryDetails();
         boolean found = false;
         for (Item item : inventory) { //cycles through inventory and checks if the choice matches
 
             if (item.getName().toLowerCase().equals(choice)) {
                 System.out.println(item.getName() + " given to " + currentRoom.getWitness().getName());
-                inventory.remove(item);
+                removeFromInventory(item);
                 found = true;
 
                 // add to witness inventory
@@ -125,12 +164,18 @@ public class Detective extends Character implements Serializable {
 
 
 
-    @Override
-    public void getDescription() {
-        System.out.println("Brief Description: ");
+
+
+
+
+
     }
 
-}
+
+
+
+
+
 
 
 

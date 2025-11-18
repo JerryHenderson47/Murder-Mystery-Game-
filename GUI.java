@@ -23,7 +23,7 @@ public class GUI extends Application {
 
         northButton.setOnAction(e -> {
             Room outside = new Room("outside the main entrance of the university");
-            Detective player = new Detective("Player", outside);
+            Detective player = new Detective("Player","Small blonde" , outside);
             player.placeItem();
         });
 
