@@ -23,8 +23,9 @@ public class Quest {
         return requiredItem;
     }
 
-
-
+    public void setCompleted(boolean completed){
+        this.completed = completed;
+    }
 
 
 }
