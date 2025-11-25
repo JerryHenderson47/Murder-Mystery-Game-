@@ -1,18 +1,18 @@
 import java.util.*;
 
 
-public class AmnesiaWitness extends PuzzleWItness {
+public class AmnesiaWitness extends Witness {
     Scanner scan = new  Scanner(System.in);
     private ArrayList<AmnesiaItem> memoryItems;
-    private ArrayList<Item> inventory;
+
 
     public AmnesiaWitness(String name,
                           String victimRelationship, String information,
                           int trustLevel,
-                          String puzzleName, String description
+                           String description
                           ) {
 
-        super(name,victimRelationship,information, trustLevel,puzzleName,description);
+        super(name,victimRelationship,information, trustLevel,description);
         memoryItems = new ArrayList();
 
     }
@@ -30,11 +30,7 @@ public class AmnesiaWitness extends PuzzleWItness {
 
 
 
-    public void printStory(){
-        System.out.println("My name is " + this.getName());
-        System.out.println("I can't remember anything I am no help!");
-        System.out.println("Maybe you could find something to spark my memory");
-    }
+
 
 
 
@@ -47,9 +43,7 @@ public class AmnesiaWitness extends PuzzleWItness {
 
     }
 
-    public ArrayList<Item> getInventory(){
-        return inventory;
-    }
+
 
 
 
@@ -65,11 +59,9 @@ public class AmnesiaWitness extends PuzzleWItness {
 
     @Override
     public void play(){
-        boolean puzzleSolved = false;
 
         ArrayList<AmnesiaItem> sortedItems = new ArrayList<>(memoryItems);
         sortedItems.sort(Comparator.comparingInt(AmnesiaItem::getOrderNum));// creates a separate array list with the memories in the correct order NEED TO LOOK OVER THIS
-        boolean memoriesSorted = false;
 
 
         System.out.println("Sort the items so that the story fits");
@@ -115,6 +107,8 @@ public class AmnesiaWitness extends PuzzleWItness {
 
     @Override
     public void interact() {
-        printStory();
+        System.out.println("My name is " + this.getName());
+        System.out.println("I can't remember anything I am no help!");
+        System.out.println("Maybe you could find something to spark my memory");
     }
 }

@@ -9,6 +9,7 @@ public class Room implements Serializable {
     private ArrayList<Item>  itemsList;
     private Witness witness;
     private boolean hasWitness;
+    private boolean hasItems;
 
 
 
@@ -16,10 +17,10 @@ public class Room implements Serializable {
     public Room(String description,
                 Item... items
                 ) {
-        this.description = description;
-        exits = new HashMap<>();
+       this(description);
 
         hasWitness = false;
+        hasItems = true;
 
         itemsList = new ArrayList<>();
         for (Item item : items) {
@@ -34,8 +35,21 @@ public class Room implements Serializable {
         this.witness = witness;
 
         hasWitness = true;
+        hasItems = true;
 
     }
+
+    public Room(String description) {
+
+        this.description = description;
+        exits = new HashMap<>();
+
+        hasWitness = false;
+        hasItems = false;
+
+    }
+
+
 
 
 
@@ -99,10 +113,11 @@ public class Room implements Serializable {
 
     // gives the player a sentence
     public String getLongDescription() {
-        if (hasWitness)
+        if (hasWitness && hasItems)
             return "You are " + description + ".\nExits: " + getExitString() + "\nItems: " + getItemsNames() +"\nA witness called " + witness.getName();
-        else
+        else if (hasItems)
             return "You are " + description + ".\nExits: " + getExitString() + "\nItems: " + getItemsNames();
-
+        else
+            return "You are " + description + ".\nExits: " + getExitString();
     }
 }

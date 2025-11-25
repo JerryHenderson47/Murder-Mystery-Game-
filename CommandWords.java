@@ -15,6 +15,7 @@ public class CommandWords {
         validCommands.put("place", "Place an item");
         validCommands.put("give","Give an item to another character");
         validCommands.put("talk","talk to another character");
+        validCommands.put("Break", "Break an item");
 
         //Amnesia witness game
         validCommands.put("play", "play the witness's game");

@@ -3,20 +3,19 @@ import java.security.SecureRandom;
 import java.util.Scanner;
 
 
-public class HideNSeekWitness extends PuzzleWItness{
-    private ArrayList<Item> inventory;
+public class HideNSeekWitness extends Witness{
+
     private HidingSpot position;
 
     private ArrayList<HidingSpot> hidingSpots;
 
     public HideNSeekWitness(String name, String victimRelationship,
-                         int trustLevel, String puzzleName,
+                         int trustLevel,
                             String description,
                             String information,HidingSpot ... spots) {
 
-        super(name,victimRelationship,information, trustLevel,puzzleName,description);
+        super(name,victimRelationship,information, trustLevel,description);
 
-        inventory = new ArrayList<>();
 
 
         //create the random hiding spots
@@ -66,7 +65,7 @@ public class HideNSeekWitness extends PuzzleWItness{
 
     @Override
     public void addToInventory(Item item){
-        inventory.add(item);
+        getInventory().add(item);
     }
 
     @Override

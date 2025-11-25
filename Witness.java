@@ -20,12 +20,10 @@ public abstract class Witness extends Character  {
 
     //getters and setters
     public String getVictimRelationship() {
-
         return victimRelationship;
     }
 
     public void setVictimRelationship(String victimRelationship) {
-
         this.victimRelationship = victimRelationship;
     }
 
@@ -52,6 +50,7 @@ public abstract class Witness extends Character  {
     public abstract void addToInventory(Item item);
 
     public abstract void interact();
+    public abstract void play();
 
 
 }

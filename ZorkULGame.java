@@ -13,14 +13,13 @@ Overall, it recreates the classic Zork interactive fiction experience with a uni
 emphasizing exploration and simple command-driven gameplay
 */
 
-import java.util.Scanner;
 import java.io.*;
 
 public class ZorkULGame {
     private Parser parser;
     private Detective player;
     private AmnesiaWitness witness1;
-    private PuzzleWItness witness2;
+    private HideNSeekWitness witness2;
 
     public ZorkULGame() {
         createRooms();
@@ -28,7 +27,7 @@ public class ZorkULGame {
     }
 
     private void createRooms() {
-        Room outside, childBedroom, pub, study, office;
+        Room outside, childBedroom, diningRoom, study, office;
 
 
         //Create the Study
@@ -39,7 +38,7 @@ public class ZorkULGame {
         AmnesiaItem memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
 
 
-         witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Amnesia","Small old ragged man");
+         witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Small old ragged man");
 
         study = new Room(Text.studyDescription, witness1,memory1,memory2,memory3,memory4,memory5);
 
@@ -50,33 +49,44 @@ public class ZorkULGame {
         HidingSpot spot4 = new HidingSpot(Text.hidingSpot4Name,Text.hidingSpot4Description, 4);
         HidingSpot spot5 = new HidingSpot(Text.hidingSpot5Name,Text.hidingSpot5Description, 5);
 
-        witness2 = new HideNSeekWitness("Holly", "child", 15,"HideNSeek", "Small blonde lively girl", "A man walked in and grabbed a knife",spot1,spot2,spot3,spot4,spot5);
+        witness2 = new HideNSeekWitness("Holly", "child", 15, "Small blonde lively girl", "A man walked in and grabbed a knife",spot1,spot2,spot3,spot4,spot5);
 
 
         childBedroom = new Room(Text.childBedroomDescription,witness2);
 
 
 
+        // create the Dining Room
+        Item dog = new Item("Benny", "Big black and white dalmation");
+        ItemQuest dogQuest = new ItemQuest(Text.dogQuestDetails,dog );
+        QuestWitness witness3 = new QuestWitness("Ben", "child", "A person came in and grabbed one of those kitchen knives",30, "small ginger quiet boy", dogQuest);
+
+
+        diningRoom = new Room(Text.diningRoomDescription,witness3);
+
+
+
 
         // create rooms
         outside = new Room("outside the main entrance of the university");
-        pub = new Room("in the campus pub");
-        office = new Room("in the computing admin office");
+        office = new Room("in the computing admin office", dog);
 
 
         // initialise room exits
         outside.setExit("east", childBedroom);
         outside.setExit("south", study);
-        outside.setExit("west", pub);
+        outside.setExit("west", diningRoom);
 
         childBedroom.setExit("west", outside);
 
-        pub.setExit("east", outside);
+        diningRoom.setExit("east", outside);
 
         study.setExit("north", outside);
         study.setExit("east", office);
 
         office.setExit("west", study);
+
+
 
 
 
@@ -139,6 +149,8 @@ public class ZorkULGame {
 
     private boolean processCommand(Command command) {
         String commandWord = command.getCommandWord();
+        Room currentRoom = player.getCurrentRoom();
+
 
         if (commandWord == null) {
             System.out.println("I don't understand your command...");
@@ -166,19 +178,18 @@ public class ZorkULGame {
                 player.placeItem();
                 break;
             case "talk":
-                if(player.getCurrentRoom().hasWitness())
-                    player.getCurrentRoom().getWitness().interact();
+                if(currentRoom.hasWitness())
+                    currentRoom.getWitness().interact();
                 else System.out.println("I don't understand your command...");
                 break;
             case "give":
                 player.giveItem();
                 break;
             case "play":
-                Witness RoomWitness = player.getCurrentRoom().getWitness();
-                if (RoomWitness instanceof PuzzleWItness){
-                    ((PuzzleWItness) RoomWitness).play();
+                if (currentRoom.hasWitness()) {
+                    currentRoom.getWitness().play();
                 }
-                else System.out.println("There is no game to play in this room :)");
+                else System.out.println("There is no witness in this room!");
                 break;
             default:
                 System.out.println("I don't know what you mean...");

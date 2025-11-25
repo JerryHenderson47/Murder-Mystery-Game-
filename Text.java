@@ -44,4 +44,27 @@ public class Text {
     public static final String hidingSpot5Name = "Outside window";
     public static final String hidingSpot5Description = "Large open window with a sill that could easily hold a person";
 
+
+    //Room3 -- the dining room -- questWitness
+    public static final String diningRoomDescription = "Large open dining room with a large table in the centre";
+
+
+    public static final String dogQuestDetails = "Since the murder evryone was in such distress that our dog got scared and ran away \n It would mean the world to me if you could find my dog \n Then I'll tell you what I know";
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+//    public static final String
+
 }

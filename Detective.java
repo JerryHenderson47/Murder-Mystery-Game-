@@ -149,7 +149,7 @@ public class Detective extends Character implements Serializable {
 
                 // add to witness inventory
                 currentRoom.getWitness().addToInventory(item);
-                if (item instanceof AmnesiaItem){
+                if (item instanceof AmnesiaItem && currentRoom.getWitness() instanceof AmnesiaWitness){
                     System.out.println("Oh I remember,");
                     System.out.println(((AmnesiaItem)item).getAttachedMemory());
                 }
