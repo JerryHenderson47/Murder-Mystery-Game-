@@ -2,32 +2,29 @@ import java.util.*;
 
 public  class QuestWitness extends Witness{
     private Quest quest;
+    private Detective player;
 
 
     public QuestWitness(String name, String victimRelationship,
                         String information, int trustLevel,
-                        String description,Quest quest){
+                        String description,Quest quest,Detective player){
 
         super(name,victimRelationship,information, trustLevel,description);
         this.quest = quest;
+        this.player = player;
 
 
 
     }
 
+
+
+
+
+
     @Override
     public void addToInventory(Item item){
-        if (quest instanceof ItemQuest quest) {
-            if (quest.getRequiredItem().equals(item)){
-                 quest.setCompleted(true);
-            }
-            quest.endResult(this);
-
-
-
-        }
-        else getInventory().add(item);
-
+        getInventory().add(item);
     }
 
     @Override
@@ -40,9 +37,12 @@ public  class QuestWitness extends Witness{
     @Override
     public void interact(){
 
-        if (!quest.getCompleted() && quest.isRunning()){
-            System.out.println("Have you done it yet????");
-            System.out.println("Come on I am waiting");
+        if (!quest.isCompleted() && quest.isRunning()){
+            quest.endResult(this);
+            if(!quest.isCompleted()) {
+                System.out.println("Have you done it yet????");
+                System.out.println("Come on I am waiting");
+            }
         }
 
         else if (!(quest.isRunning())) {
@@ -53,13 +53,14 @@ public  class QuestWitness extends Witness{
             String choice = shcan.nextLine().toLowerCase().trim();
             if (choice.equals("yes")) {
                 System.out.println(quest.giveDetails());
+                player.setCurrentQuest(quest);
                 play();
             } else {
                 System.out.println("If you want my information you will have to do this for me!");
             }
         }
-        else if(quest.getCompleted()){
-            System.out.println("Thanks for that, I hope i helped!");
+        else if(quest.isCompleted()){
+            System.out.println("Thanks for that, I hope I helped!");
         }
     }
 

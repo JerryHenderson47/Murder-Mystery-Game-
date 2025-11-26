@@ -3,10 +3,11 @@ import java.util.Scanner;
 import java.io.*;
 
 public class Detective extends Character implements Serializable {
-    Scanner scan = new Scanner(System.in);
+    Scanner shcan = new Scanner(System.in);
 
     private ArrayList<Item> inventory;// creates the detectives inventory
     private Room currentRoom;
+    private Quest currentQuest;
 
 
 
@@ -16,6 +17,7 @@ public class Detective extends Character implements Serializable {
 
         super(name,description);
         this.currentRoom = currentRoom;
+        this.currentQuest = null;
 
         inventory = new ArrayList<>();
         for (Item item : items) {
@@ -27,6 +29,14 @@ public class Detective extends Character implements Serializable {
 
     //getters
 
+
+    public Quest getCurrentQuest() {
+        return currentQuest;
+    }
+
+    public void setCurrentQuest(Quest quest){
+        this.currentQuest = quest;
+    }
 
     public String getDescription() {
         return "Detective";
@@ -41,10 +51,6 @@ public class Detective extends Character implements Serializable {
     public void setCurrentRoom(Room room){
         this.currentRoom = room;
     }
-
-
-
-    public void interact(){};
 
 
     public ArrayList<Item> getInventory(){
@@ -65,7 +71,11 @@ public class Detective extends Character implements Serializable {
 
             StringBuilder sb = new StringBuilder();
             for (Item item : inventory) {
-                sb.append(item.getName()).append("|");
+                if (inventory.size() >1) {
+                    sb.append(item.getName()).append("|");
+                }
+                else sb.append(item.getName());
+
             }
             return sb.toString().trim();
     }
@@ -87,7 +97,7 @@ public class Detective extends Character implements Serializable {
     public void pickUpItem(){
         System.out.println("Items: " + currentRoom.getItemsNames());
         System.out.println("What item: ");
-        String choice = scan.nextLine().toLowerCase().trim();
+        String choice = shcan.nextLine().toLowerCase().trim();
         boolean found = false;
         for (Item item : currentRoom.getItems()){ //cycles through items and checks if the choice matches
             if (item.getName().toLowerCase().equals(choice)){
@@ -111,7 +121,7 @@ public class Detective extends Character implements Serializable {
 
         System.out.println("Inventory: " + getInventoryNames());
         System.out.println("What item: ");
-        return scan.nextLine().toLowerCase().trim();
+        return shcan.nextLine().toLowerCase().trim();
 
     }
 
@@ -161,6 +171,41 @@ public class Detective extends Character implements Serializable {
         if (!found)
             System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
     }
+    public void breakItem(){
+        if (currentQuest instanceof BreakQuest currentQuest) {
+            boolean toolFound = false;
+            for (Item item : inventory) {
+                if (item.equals(currentQuest.getRequiredTool()))
+                    toolFound = true;
+            }
+
+
+            if (!toolFound) {
+                System.out.println("You don't have the required tool to break an item!");
+            }
+
+
+            else if (toolFound) {
+                System.out.println("What item: ");
+                String choice = shcan.nextLine();
+
+                boolean targetItemFound = false;
+                for (Item item : currentRoom.getItems()) {
+                    if (item.getName().equals(choice) && currentQuest.getTargetItem().getName().equals(choice)) {
+                        System.out.println("You hava broken " + currentQuest.getTargetItem().getName());
+                        targetItemFound = true;
+                    }
+
+                }
+                if (targetItemFound) {
+                    currentQuest.setBroken(true);
+                } else System.out.println("There are no breakable items in this room");
+            }
+        }
+
+    }
+
+
 
 
 

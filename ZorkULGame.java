@@ -20,6 +20,8 @@ public class ZorkULGame {
     private Detective player;
     private AmnesiaWitness witness1;
     private HideNSeekWitness witness2;
+    private QuestWitness witness3;
+    private QuestWitness witness4;
 
     public ZorkULGame() {
         createRooms();
@@ -27,7 +29,8 @@ public class ZorkULGame {
     }
 
     private void createRooms() {
-        Room outside, childBedroom, diningRoom, study, office;
+        Room outside, childBedroom, diningRoom, study, office, livingRoom;
+        outside = new Room("outside the main entrance of the university");
 
 
         //Create the Study
@@ -38,7 +41,7 @@ public class ZorkULGame {
         AmnesiaItem memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
 
 
-         witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Small old ragged man");
+        witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Small old ragged man");
 
         study = new Room(Text.studyDescription, witness1,memory1,memory2,memory3,memory4,memory5);
 
@@ -54,21 +57,34 @@ public class ZorkULGame {
 
         childBedroom = new Room(Text.childBedroomDescription,witness2);
 
+        player = new Detective("player","small short and stocky ", outside);
+
+
 
 
         // create the Dining Room
         Item dog = new Item("Benny", "Big black and white dalmation");
         ItemQuest dogQuest = new ItemQuest(Text.dogQuestDetails,dog );
-        QuestWitness witness3 = new QuestWitness("Ben", "child", "A person came in and grabbed one of those kitchen knives",30, "small ginger quiet boy", dogQuest);
+        witness3 = new QuestWitness("Ben", "child", "A person came in and grabbed one of those kitchen knives",30, "small ginger quiet boy", dogQuest, player);
 
 
-        diningRoom = new Room(Text.diningRoomDescription,witness3);
+
+
+        //create Living Room
+        Item hammer = new Item("Hammer", "Small black and yellow");
+        Item vase = new Item("Vase", "pretty vase");
+        BreakQuest vaseQuest = new BreakQuest("Due to this murder my sister that I hate is gonna get mums priceless vase, could you please break it for me,just to spite her","I nedd to break my mothers vase",vase,hammer);
+        witness4 = new QuestWitness("Tom", "Son" , "A person came in and robbed my shoes", 30,"Tall man", vaseQuest,player);
+
+        livingRoom = new Room("Small",witness4,hammer);
+        diningRoom = new Room(Text.diningRoomDescription,witness3,vase);
+
 
 
 
 
         // create rooms
-        outside = new Room("outside the main entrance of the university");
+//        outside = new Room("outside the main entrance of the university");
         office = new Room("in the computing admin office", dog);
 
 
@@ -76,6 +92,8 @@ public class ZorkULGame {
         outside.setExit("east", childBedroom);
         outside.setExit("south", study);
         outside.setExit("west", diningRoom);
+        outside.setExit("north", livingRoom);
+
 
         childBedroom.setExit("west", outside);
 
@@ -85,6 +103,8 @@ public class ZorkULGame {
         study.setExit("east", office);
 
         office.setExit("west", study);
+
+        livingRoom.setExit("south", outside);
 
 
 
@@ -98,7 +118,7 @@ public class ZorkULGame {
 
 
         // create the player character and start outside
-        player = new Detective("player","small short and stocky ", outside);
+
 
     }
 
@@ -189,7 +209,10 @@ public class ZorkULGame {
                 if (currentRoom.hasWitness()) {
                     currentRoom.getWitness().play();
                 }
-                else System.out.println("There is no witness in this room!");
+                else System.out.println("There is no game in this room!");
+                break;
+            case "break":
+                player.breakItem();
                 break;
             default:
                 System.out.println("I don't know what you mean...");

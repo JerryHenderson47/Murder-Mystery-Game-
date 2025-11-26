@@ -67,6 +67,9 @@ public class Room implements Serializable {
         return hasWitness;
     }
 
+
+
+
     public Witness getWitness() {
         return witness;
     }

@@ -1,10 +1,10 @@
-public interface Quest<T> {
+public interface Quest{
 
      String giveDetails();
-     void endResult(T context);
+     void endResult(Witness witness);
      void startQuest();
      String giveProblem();
      boolean isRunning();
-     boolean getCompleted();
+     boolean isCompleted();
 
 }
