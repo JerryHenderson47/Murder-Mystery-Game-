@@ -2,19 +2,15 @@ import java.util.*;
 
 public  class QuestWitness extends Witness{
     private Quest quest;
-    private Detective player;
+
 
 
     public QuestWitness(String name, String victimRelationship,
                         String information, int trustLevel,
                         String description,Quest quest,Detective player){
 
-        super(name,victimRelationship,information, trustLevel,description);
+        super(name,victimRelationship,information, trustLevel,description, player);
         this.quest = quest;
-        this.player = player;
-
-
-
     }
 
 
@@ -43,6 +39,9 @@ public  class QuestWitness extends Witness{
                 System.out.println("Have you done it yet????");
                 System.out.println("Come on I am waiting");
             }
+            else if(quest.isCompleted()){
+                getPlayer().setWitnessInfo(getName(), getInformation());
+            }
         }
 
         else if (!(quest.isRunning())) {
@@ -53,7 +52,7 @@ public  class QuestWitness extends Witness{
             String choice = shcan.nextLine().toLowerCase().trim();
             if (choice.equals("yes")) {
                 System.out.println(quest.giveDetails());
-                player.setCurrentQuest(quest);
+                getPlayer().setCurrentQuest(quest);
                 play();
             } else {
                 System.out.println("If you want my information you will have to do this for me!");

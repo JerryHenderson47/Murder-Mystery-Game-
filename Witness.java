@@ -5,17 +5,20 @@ public abstract class Witness extends Character  {
     private ArrayList<Item> inventory;
     private int trustLevel;
     private String information;
+    private Detective player;
 
 
 
     public Witness(String name,String victimRelationship,
                    String information, int trustLevel,
-                   String description) {
+                   String description,Detective player) {
         super(name,description);
         this.victimRelationship = victimRelationship;
         this.trustLevel = trustLevel;
         inventory = new ArrayList<>();
         this.information = information;
+        this.player = player;
+
     }
 
     //getters and setters
@@ -47,7 +50,12 @@ public abstract class Witness extends Character  {
         this.trustLevel = trustLevel;
     }
 
+    public Detective getPlayer(){
+        return player;
+    }
+
     public abstract void addToInventory(Item item);
+
 
     public abstract void interact();
     public abstract void play();

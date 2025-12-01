@@ -1,6 +1,4 @@
-import java.util.*;
-
-public class BreakQuest  extends AbstractQuest{
+public class BreakQuest  extends Quest {
     private Item targetItem;
     private boolean isBroken;
     private Item requiredTool;

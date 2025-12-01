@@ -1,25 +1,29 @@
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.*;
 
 public class Room implements Serializable {
+    Scanner shcan = new Scanner(System.in);
     private String description;
     private Map<String, Room> exits;// Map direction to neighboring Room
     private ArrayList<Item>  itemsList;
     private Witness witness;
     private boolean hasWitness;
     private boolean hasItems;
+    private ArrayList<Suspect> suspects;
 
 
 
-        //constructor that allows you to add a description and any number of items to a room object
+
+    //constructor that allows you to add a description and any number of items to a room object
     public Room(String description,
                 Item... items
                 ) {
        this(description);
 
-        hasWitness = false;
         hasItems = true;
 
         itemsList = new ArrayList<>();
@@ -39,6 +43,8 @@ public class Room implements Serializable {
 
     }
 
+
+
     public Room(String description) {
 
         this.description = description;
@@ -46,11 +52,35 @@ public class Room implements Serializable {
 
         hasWitness = false;
         hasItems = false;
+        suspects = new ArrayList<>();
+
 
     }
 
 
 
+
+
+    public boolean hasSuspects(){
+        return(!suspects.isEmpty());
+    }
+
+    public ArrayList<Suspect> getSuspectList() {
+        return suspects;
+    }
+
+    public Suspect getSuspect(int i){
+        return suspects.get(i);
+    }
+
+    public int getRequiredSuspect(){
+        System.out.println("Which suspect do you choose\n(1,2,3,4 or 5): ");
+        return shcan.nextInt() - 1;
+    }
+
+    public void addSuspects(Suspect ... suspects){
+        Collections.addAll(this.suspects,suspects);
+    }
 
 
 

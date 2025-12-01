@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 
 public class HideNSeekWitness extends Witness{
+    Scanner shcan = new Scanner(System.in);
 
     private HidingSpot position;
 
@@ -12,9 +13,9 @@ public class HideNSeekWitness extends Witness{
     public HideNSeekWitness(String name, String victimRelationship,
                          int trustLevel,
                             String description,
-                            String information,HidingSpot ... spots) {
+                            String information,Detective player, HidingSpot ... spots) {
 
-        super(name,victimRelationship,information, trustLevel,description);
+        super(name,victimRelationship,information, trustLevel,description,player);
 
 
 
@@ -70,20 +71,31 @@ public class HideNSeekWitness extends Witness{
 
     @Override
     public void interact(){
-        System.out.println("Hello");
+        System.out.println("Hi I'm " + getName());
+        System.out.println("I'll tell you what I know if you can find me hahahah!");
+        System.out.println("Would you like to play hide and seek???");
+        System.out.println("yes/no: ");
+        String choice = shcan.nextLine().toLowerCase().trim();
+        if(choice.equals("yes"))
+            play();
+        else
+            System.out.println("you will have to play if you want my information!!!");
+
+
+
     }
 
 
     @Override
     public  void play() {
-        Scanner scan = new Scanner(System.in);
+
         boolean witnessFound = false;
+        System.out.println("===Find " + getName() + "to retrive the information===");
 
         while (!witnessFound)    {
-
             System.out.println(getHidingSpotNames());
             System.out.println("What Spot: ");
-            String choice = scan.nextLine().toLowerCase().trim();
+            String choice = shcan.nextLine().toLowerCase().trim();
 
 
             boolean spotFound = false;
@@ -93,6 +105,7 @@ public class HideNSeekWitness extends Witness{
                     System.out.println("Ah damn! you got me");
                     System.out.println("Ok I'll give you my story,");
                     System.out.println(getInformation());
+                    getPlayer().setWitnessInfo(getName(),getInformation());
                     witnessFound = true;
 
 

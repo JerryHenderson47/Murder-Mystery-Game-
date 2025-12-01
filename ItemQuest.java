@@ -1,4 +1,4 @@
-public class ItemQuest extends AbstractQuest{
+public class ItemQuest extends Quest {
 
     private Item requiredItem;
 

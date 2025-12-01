@@ -16,6 +16,7 @@ emphasizing exploration and simple command-driven gameplay
 import java.io.*;
 
 public class ZorkULGame {
+
     private Parser parser;
     private Detective player;
     private AmnesiaWitness witness1;
@@ -29,35 +30,56 @@ public class ZorkULGame {
     }
 
     private void createRooms() {
-        Room outside, childBedroom, diningRoom, study, office, livingRoom;
-        outside = new Room("outside the main entrance of the university");
+        Room mainHall, childBedroom, diningRoom, study, office, livingRoom;
+
+        //creating main hall
+        mainHall = new Room("in the main hall of the mansion\nWhere in which 5 suspects stand before you");
+        Suspect suspect1,suspect2,suspect3,suspect4,suspect5;
+        suspect1 = new Suspect("Ella", "Daughter ","Blonde teenager", "At shcool", false, 1);
+        suspect2 = new Suspect("Eoghan","Employee" ,"Old small gardener", "Out in tha garden ", true, 2);
+        suspect3 = new Suspect("Sean", "Husband","Tall businessman", "Working", false, 3);
+        suspect4 = new Suspect("Serena", "Cleaner","Brunette pensioner", "At shcool", false, 4);
+        suspect5 = new Suspect("Tim", "Postman","", "Delivering post across the road ", false, 5);
+
+
+
+
+        mainHall.addSuspects(suspect1,suspect2,suspect3,suspect4,suspect5);
+
+
+
+
 
 
         //Create the Study
-        AmnesiaItem memory1 = new AmnesiaItem(Text.memoryItem1Name, Text.memoryItem1Description, Text.memoryItem1Story,1);
-        AmnesiaItem memory2 = new AmnesiaItem(Text.memoryItem2Name, Text.memoryItem2Description, Text.memoryItem2Story,2);
-        AmnesiaItem memory3 = new AmnesiaItem(Text.memoryItem3Name, Text.memoryItem3Description, Text.memoryItem3Story,3);
-        AmnesiaItem memory4 = new AmnesiaItem(Text.memoryItem4Name, Text.memoryItem4Description, Text.memoryItem4Story,4);
-        AmnesiaItem memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
+        AmnesiaItem memory1,memory2,memory3,memory4,memory5;
+
+         memory1 = new AmnesiaItem(Text.memoryItem1Name, Text.memoryItem1Description, Text.memoryItem1Story,1);
+         memory2 = new AmnesiaItem(Text.memoryItem2Name, Text.memoryItem2Description, Text.memoryItem2Story,2);
+         memory3 = new AmnesiaItem(Text.memoryItem3Name, Text.memoryItem3Description, Text.memoryItem3Story,3);
+         memory4 = new AmnesiaItem(Text.memoryItem4Name, Text.memoryItem4Description, Text.memoryItem4Story,4);
+         memory5 = new AmnesiaItem(Text.memoryItem5Name, Text.memoryItem5Description, Text.memoryItem5Story,5);
 
 
-        witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Small old ragged man");
+        witness1 = new AmnesiaWitness("Bobby", "grandfather" , "Oh I cant quite remember, if you find a few items that could jog my memory", 60, "Small old ragged man",player);
 
         study = new Room(Text.studyDescription, witness1,memory1,memory2,memory3,memory4,memory5);
 
         // create the child bedroom
-        HidingSpot spot1 = new HidingSpot(Text.hidingSpot1Name,Text.hidingSpot1Description, 1);
-        HidingSpot spot2 = new HidingSpot(Text.hidingSpot2Name,Text.hidingSpot2Description, 2);
-        HidingSpot spot3 = new HidingSpot(Text.hidingSpot3Name,Text.hidingSpot3Description, 3);
-        HidingSpot spot4 = new HidingSpot(Text.hidingSpot4Name,Text.hidingSpot4Description, 4);
-        HidingSpot spot5 = new HidingSpot(Text.hidingSpot5Name,Text.hidingSpot5Description, 5);
+        HidingSpot spot1,spot2,spot3,spot4,spot5;
 
-        witness2 = new HideNSeekWitness("Holly", "child", 15, "Small blonde lively girl", "A man walked in and grabbed a knife",spot1,spot2,spot3,spot4,spot5);
+        spot1 = new HidingSpot(Text.hidingSpot1Name,Text.hidingSpot1Description, 1);
+        spot2 = new HidingSpot(Text.hidingSpot2Name,Text.hidingSpot2Description, 2);
+        spot3 = new HidingSpot(Text.hidingSpot3Name,Text.hidingSpot3Description, 3);
+        spot4 = new HidingSpot(Text.hidingSpot4Name,Text.hidingSpot4Description, 4);
+        spot5 = new HidingSpot(Text.hidingSpot5Name,Text.hidingSpot5Description, 5);
+
+        witness2 = new HideNSeekWitness("Holly", "child", 15, "Small blonde lively girl", "A man walked in and grabbed a knife",player, spot1,spot2,spot3,spot4,spot5);
 
 
         childBedroom = new Room(Text.childBedroomDescription,witness2);
 
-        player = new Detective("player","small short and stocky ", outside);
+        player = new Detective("player","small short and stocky ", mainHall);
 
 
 
@@ -89,22 +111,22 @@ public class ZorkULGame {
 
 
         // initialise room exits
-        outside.setExit("east", childBedroom);
-        outside.setExit("south", study);
-        outside.setExit("west", diningRoom);
-        outside.setExit("north", livingRoom);
+        mainHall.setExit("east", childBedroom);
+        mainHall.setExit("south", study);
+        mainHall.setExit("west", diningRoom);
+        mainHall.setExit("north", livingRoom);
 
 
-        childBedroom.setExit("west", outside);
+        childBedroom.setExit("west", mainHall);
 
-        diningRoom.setExit("east", outside);
+        diningRoom.setExit("east", mainHall);
 
-        study.setExit("north", outside);
+        study.setExit("north", mainHall);
         study.setExit("east", office);
 
         office.setExit("west", study);
 
-        livingRoom.setExit("south", outside);
+        livingRoom.setExit("south", mainHall);
 
 
 
@@ -200,19 +222,21 @@ public class ZorkULGame {
             case "talk":
                 if(currentRoom.hasWitness())
                     currentRoom.getWitness().interact();
+                else if(currentRoom.hasSuspects()){
+                    Suspect currentSuspect = currentRoom.getSuspectList().get(currentRoom.getRequiredSuspect());
+                    currentSuspect.talk();
+                    currentSuspect.addSuspectInfo(player,currentSuspect);
+                }
                 else System.out.println("I don't understand your command...");
                 break;
             case "give":
                 player.giveItem();
                 break;
-            case "play":
-                if (currentRoom.hasWitness()) {
-                    currentRoom.getWitness().play();
-                }
-                else System.out.println("There is no game in this room!");
-                break;
             case "break":
                 player.breakItem();
+                break;
+            case "info":
+                player.printCurrentInfo();
                 break;
             default:
                 System.out.println("I don't know what you mean...");
@@ -248,12 +272,12 @@ public class ZorkULGame {
 
     public static void main(String[] args) {
         ZorkULGame game = new ZorkULGame();
-//        GUI gui = new GUI();
+        GUI gui = new GUI();
 
 
 
-       // gui.showGUI();
-        game.play();
+        gui.showGUI();
+//        game.play();
 
     }
 }

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.io.*;
 
@@ -8,6 +9,8 @@ public class Detective extends Character implements Serializable {
     private ArrayList<Item> inventory;// creates the detectives inventory
     private Room currentRoom;
     private Quest currentQuest;
+    private HashMap<String,String> witnessInfo;
+    private HashMap<String,String> suspectInfo;
 
 
 
@@ -18,6 +21,8 @@ public class Detective extends Character implements Serializable {
         super(name,description);
         this.currentRoom = currentRoom;
         this.currentQuest = null;
+        witnessInfo = new HashMap<>();
+        suspectInfo = new HashMap<>();
 
         inventory = new ArrayList<>();
         for (Item item : items) {
@@ -28,8 +33,6 @@ public class Detective extends Character implements Serializable {
 
 
     //getters
-
-
     public Quest getCurrentQuest() {
         return currentQuest;
     }
@@ -45,6 +48,40 @@ public class Detective extends Character implements Serializable {
 
     public Room getCurrentRoom() {
         return currentRoom;
+    }
+
+    public HashMap<String, String> getWitnessInfo() {
+        return witnessInfo;
+    }
+
+    public HashMap<String,String> getSuspectInfo(){
+        return suspectInfo;
+    }
+
+    public void setSuspectInfo(String suspectName,String info){
+        suspectInfo.put(suspectName,info);
+    }
+
+    public void setWitnessInfo(String witnessName, String info){
+        witnessInfo.put(witnessName,info);
+    }
+
+
+    public void printCurrentInfo(){
+        System.out.println("Witness info(1) or Suspect info(2): ");
+        int choice = shcan.nextInt();
+        switch (choice){
+            case(1): for (var witness : witnessInfo.entrySet()) {
+                System.out.println(witness.getKey() + " : \n" + witness.getValue());
+
+            }
+                break;
+            case(2): for (var suspect : suspectInfo.entrySet()) {
+                System.out.println(suspect.getKey() + " : \n" + suspect.getValue());
+
+            }
+            break;
+        }
     }
 
 
@@ -187,11 +224,11 @@ public class Detective extends Character implements Serializable {
 
             else if (toolFound) {
                 System.out.println("What item: ");
-                String choice = shcan.nextLine();
+                String choice = shcan.nextLine().toLowerCase().trim();
 
                 boolean targetItemFound = false;
                 for (Item item : currentRoom.getItems()) {
-                    if (item.getName().equals(choice) && currentQuest.getTargetItem().getName().equals(choice)) {
+                    if (item.getName().toLowerCase().equals(choice) && currentQuest.getTargetItem().getName().toLowerCase().equals(choice)) {
                         System.out.println("You hava broken " + currentQuest.getTargetItem().getName());
                         targetItemFound = true;
                     }
@@ -199,7 +236,8 @@ public class Detective extends Character implements Serializable {
                 }
                 if (targetItemFound) {
                     currentQuest.setBroken(true);
-                } else System.out.println("There are no breakable items in this room");
+                }
+                else System.out.println("There are no breakable items in this room");
             }
         }
 
