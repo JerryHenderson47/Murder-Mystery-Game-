@@ -1,5 +1,7 @@
-public class HidingSpot extends Thing{
+import java.io.Serializable;
 
+public class HidingSpot extends Thing implements Serializable {
+    private static final long serialVersionUID = 1L;
     private boolean isOccupied;
     private int IDnumber;
 

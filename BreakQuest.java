@@ -1,4 +1,7 @@
-public class BreakQuest  extends Quest {
+import java.io.Serializable;
+
+public class BreakQuest  extends AbstractQuest implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Item targetItem;
     private boolean isBroken;
     private Item requiredTool;
@@ -16,17 +19,19 @@ public class BreakQuest  extends Quest {
     }
 
     @Override
-    public void endResult(Witness witness){
+    public String endResult(Witness witness){
 
         if (isBroken){
-            System.out.println("Thank so much!!!\nI honestly don't know what I would have done with my life otherwise");
-            System.out.println("I'll tell you what I saw....");
-            System.out.println(witness.getInformation());
             setIsRunning(false);
             setCompleted(true);
 
+            return "Thank so much!!!\n" +
+                    "I honestly don't know what I would have done with my life otherwise\n" +
+                    "I'll tell you what I saw....\n" +
+                    witness.getInformation();
+
         }
-        else System.out.println("Cm'onnn grow a pair would ya.....");
+        else return "Cm'onnn grow a pair would ya.....";
     }
 
 
@@ -35,12 +40,11 @@ public class BreakQuest  extends Quest {
 
 
 
-    public void startQuest(){
-        System.out.println("Thank you so much I need that " + targetItem.getName() + " destroyed!");
-        System.out.println();
-        System.out.println("===Explore the house to try and find the " + targetItem.getName() + "===" );
-        System.out.println("Once found, break the item and report back to the witness");
+    public String startQuest(){
         setIsRunning(true);
+        return "Thank you so much, I need that " + targetItem.getName() + " destroyed!\n\n" +
+                "=== Explore the house to try and find the " + targetItem.getName() + " ===\n" +
+                "Once found, break the item and report back to the witness";
 
     };
     public String giveProblem(){

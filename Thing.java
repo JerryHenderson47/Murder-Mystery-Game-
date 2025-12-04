@@ -1,4 +1,7 @@
-public class Thing {
+import java.io.Serializable;
+
+public class Thing implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String description;
     private String name;
 

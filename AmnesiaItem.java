@@ -1,4 +1,7 @@
-public class AmnesiaItem extends Item {
+import java.io.Serializable;
+
+public class AmnesiaItem extends Item implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String attachedMemory;
     private int orderNum;
 
@@ -22,6 +25,11 @@ public class AmnesiaItem extends Item {
     public int getOrderNum() {
         return orderNum;
     }
+
+
+
+
+
 
 
 

@@ -16,7 +16,7 @@ public class Text {
     public static final String memoryItem3Description = "Old pistol that was still hot";
     public static final String memoryItem3Story = "They pointed the pistol at me implying I stay quite ";
     //item 4
-    public static final String memoryItem4Name = "Door Handle";
+    public static final String memoryItem4Name = "Handle";
     public static final String memoryItem4Description = "A broken door handle that looks to have belonged to the study door";
     public static final String memoryItem4Story = "They heard footsteps near the door and rushed to hold the handle of the door, eventually breaking it off the old door";
     // item 5

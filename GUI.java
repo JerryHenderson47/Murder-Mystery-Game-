@@ -1,4 +1,9 @@
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -7,11 +12,13 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class GUI extends Application{
+
+    GameController controller = new GameController();
 
     Stage window;
     ImageView characterView;
@@ -19,9 +26,15 @@ public class GUI extends Application{
     Scene scene;
     StackPane centralImage;
     BorderPane fundamentalStructure;
-    ImageView studyView, diningRoomView, childBedroomView, livingRoomView;
+
     GridPane dpad;
-    HashMap<String,ImageView> exits;
+    VBox leftBox;
+    InformationWIndow info;
+    ChoiceBox<String> inventory;
+    Button saveButton;
+    Button loadButton;
+
+
 
 
 
@@ -47,7 +60,7 @@ public class GUI extends Application{
         window.setTitle("Murder Mystery");
         fundamentalStructure = new BorderPane();
 
-        //set textBox on the top
+        //set console on the top
         console = new TextArea();
         console.setEditable(false);     // user can't type
         console.setWrapText(true);      // long lines wrap
@@ -58,16 +71,27 @@ public class GUI extends Application{
 
 
         //set the inventory on the left
-        VBox leftBox = new VBox();
+        leftBox = new VBox();
         leftBox.setPrefWidth(150);
         leftBox.setAlignment(Pos.CENTER);
 
-        ChoiceBox<String> inventory = new ChoiceBox<>();
+        // inventory drop down
+        inventory = new ChoiceBox<>();
         Label inventoryHeader  = new Label("Inventory");
-        inventory.getItems().addAll("Hammer", "Shoe", "Door Handle");
-        inventory.setValue("Hammer");
         leftBox.getChildren().addAll(inventoryHeader,inventory);
+
+
+        // information window access button
+         HashMap<String,String> witnessInfo = controller.getWitnessInfo();
+         HashMap<String,String> suspectInfo =  controller.getSuspectInfo();
+
+        info = new InformationWIndow(witnessInfo,suspectInfo);
+        Button infoButton = new Button("See current information");
+        infoButton.setOnAction(e -> info.displayInfo() );
+        leftBox.getChildren().add(infoButton);
+
         fundamentalStructure.setLeft(leftBox);
+
 
 
         //character
@@ -79,37 +103,9 @@ public class GUI extends Application{
         characterView.setTranslateX(-150);
         characterView.setTranslateY(-150);
 
-        // set the murderScene image
-        Image murderScene = new Image(ImageAdresses.murderScene);
-        ImageView murderSceneView = new ImageView(murderScene);
-        murderSceneView.setFitHeight(600);
-        murderSceneView.setFitWidth(600);
-
-        // MAKE THE study image
-        Image study = new Image(ImageAdresses.study);
-        studyView = new ImageView(study);
-        studyView.setFitHeight(600);
-        studyView.setFitWidth(600);
-
-        // make chikdl bedreoom
-        Image childBedroom = new Image(ImageAdresses.childBedroom);
-        childBedroomView = new ImageView(childBedroom);
-        childBedroomView.setFitHeight(600);
-        childBedroomView.setFitWidth(600);
 
 
-        // make dining room
-        Image diningRoom = new Image(ImageAdresses.diningRoom);
-        diningRoomView = new ImageView(diningRoom);
-        diningRoomView.setFitHeight(600);
-        diningRoomView.setFitWidth(600);
 
-
-        // make living room
-        Image livingRoom = new Image(ImageAdresses.livingRoom);
-        livingRoomView = new ImageView(livingRoom);
-        livingRoomView.setFitHeight(600);
-        livingRoomView.setFitWidth(600);
 
 
 
@@ -117,31 +113,49 @@ public class GUI extends Application{
         centralImage.setAlignment(Pos.CENTER);
         fundamentalStructure.setCenter(centralImage);
 
-        setExits(studyView,childBedroomView, diningRoomView,livingRoomView);
 
 
 
 
 
-        //set directional movement on right
+
+
+
+
+
+
+        //set directional movement for the mapp
         dpad = new GridPane();
-        Button upButton = new Button("Up");
-        upButton.setOnAction( e -> moveUp());
+        Button upButton = new Button(Direction.NORTH.getText());
+        upButton.setMinWidth(50);
+        upButton.setMinWidth(50);;
+        upButton.setOnAction( e -> {
+            setNewRoom(Direction.NORTH.getText());
 
-        Button downButton = new Button("Down");
-        downButton.setOnAction(e -> moveDown());
+        });
 
-        Button leftButton = new Button("Left");
-        leftButton.setOnAction(e -> moveLeft());
+        Button downButton = new Button(Direction.SOUTH.getText());
+        downButton.setMinWidth(50);
+        downButton.setMinWidth(50);
+        downButton.setOnAction(e -> {
+            setNewRoom(Direction.SOUTH.getText());
+        });
 
-        Button rightButton = new Button("Right");
-        rightButton.setOnAction(e -> moveRight());
+        Button leftButton = new Button(Direction.WEST.getText());
+        leftButton.setMinWidth(50);
+        leftButton.setMinWidth(50);
+        leftButton.setOnAction(e -> {
+            setNewRoom(Direction.WEST.getText());
+        });
 
-        Button[] dpadButtons = {upButton,downButton,leftButton,rightButton};
-        for(Button button : dpadButtons){
-            button.setPrefSize(50, 50);
+        Button rightButton = new Button(Direction.EAST.getText());
+        rightButton.setMinWidth(50);
+        rightButton.setMinWidth(50);
+        rightButton.setOnAction(e -> {
+            setNewRoom(Direction.EAST.getText());
+        });
 
-        }
+
         dpad.setHgap(5);
         dpad.setVgap(5);
 
@@ -150,10 +164,21 @@ public class GUI extends Application{
         dpad.add(rightButton, 2, 1);
         dpad.add(downButton,  1, 2);
 
-        VBox rightBox = new VBox();
+        VBox rightBox = new VBox(20);
         rightBox.setPrefWidth(150);
         rightBox.setAlignment(Pos.CENTER);
         rightBox.getChildren().add(dpad);
+
+
+        saveButton = new Button("Save");
+        saveButton.setOnAction(e -> printToConsole(controller.saveGame()));
+
+        loadButton = new Button("Load");
+        loadButton.setOnAction(e -> {
+            printToConsole(controller.loadGame());
+            updateInventoryChoiceBox();
+        });
+        rightBox.getChildren().addAll(saveButton,loadButton);
 
         fundamentalStructure.setRight(rightBox);
 
@@ -169,6 +194,51 @@ public class GUI extends Application{
             String command = userCommand.getText();
             printToConsole("> " + command);
             userCommand.clear();
+            String result = controller.processCommand(command);
+
+
+            if (command.startsWith("pick") || command.startsWith("place") || command.startsWith("collect") || command.startsWith("take") || command.startsWith("drop")   || command.startsWith("give")) {
+                updateInventoryChoiceBox();
+            }
+            switch(result) {
+                case "suspect": {
+                     printToConsole(handleSuspectChoice());
+                     break;
+                }
+                case "witness":
+                    boolean answer = false;
+                    Witness witness = controller.getCurrentRoom().getWitness();
+                   console.setText(handleWitness());
+                    if (witness instanceof QuestWitness qw) {
+                        if (!qw.getQuest().isRunning() && !qw.getQuest().isCompleted()) {
+                            answer = ConfirmBox.display("Witness", "Help Witness?");
+                        }
+                    }
+
+                       // handle the diffenrt types of witnesses
+                       if (answer && controller.isAmnesiaWitness()) {
+                           console.setText(witness.play());
+                           showMemoryPuzzle(controller.getAmnesiaWitness());
+                           break;
+                       } else if (answer && controller.isHideNSeekWitness()) {
+                           console.setText(witness.play());
+                           hideNSeek((HideNSeekWitness) witness);
+                           break;
+                       } else if (answer && controller.isQuestWitness()) {
+                           console.setText(witness.play());
+                           break;
+                       } else if (!answer)
+                           break;
+
+                default:
+                    console.setText(result);
+            }
+        if (controller.getPlayer().isGameOver()){
+
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            delay.setOnFinished(event-> Platform.exit());
+            delay.play();
+        }
 
         });
 
@@ -179,7 +249,9 @@ public class GUI extends Application{
 
 
         fundamentalStructure.setStyle("-fx-background-color: #7E6B5A;");
-        setCentralImage(murderSceneView, false);
+        setCentralImage(controller.getCurrentRoom().getImagePath(),600,600);
+        centralImage.getChildren().add(characterView);
+
         scene = new Scene(fundamentalStructure);
         window.setScene(scene);
         window.show();
@@ -196,56 +268,211 @@ public class GUI extends Application{
     }
 
 
-    public boolean verifyInt( String command){
-        try{
-            int i = Integer.parseInt(command);
-            System.out.println("You are being transported to level: " + i);
-            return true;
-        }catch (NumberFormatException e){
-            System.out.println("Error: Invalid Input");
-            return false;
+    private void setNewRoom(String direction){
+        if (controller.move(direction)){
+            Room newRoom = controller.getCurrentRoom();
+            setCentralImage(newRoom.getImagePath(),600,600);
+
+            // check if its a first perosn room
+            if (newRoom.isFirstPersonEnabled()) {
+                centralImage.getChildren().remove(characterView);
+            }
+            else{
+                centralImage.getChildren().add(characterView);
+                setCharacterPosition(-150,0);
+            }
+
+        }
+        else {
+            console.setText("You can't go that way!");
+        }
+
+
+    }
+
+    public enum Direction {
+        NORTH("north"),
+        SOUTH("south"),
+        EAST("east"),
+        WEST("west");
+
+        private final String text;
+
+        Direction(String text) {
+            this.text = text;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
         }
     }
 
 
 
 
-    public void moveUp(){
-        if (characterView.getTranslateY() > -230)
-            characterView.setTranslateY(characterView.getTranslateY() - 10);
-        else{
-            setCentralImage(exits.get("Up"),false);
-            setCharacterPosition(0,0);
-        }
+        private void hideNSeek(HideNSeekWitness witness) {
+
+        List<String> spots = witness.getHidingSpotNames();
+
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(spots.get(0), spots);
+        dialog.setTitle("Hide and Seek");
+        dialog.setHeaderText("Choose a hiding spot");
+        dialog.setContentText("Where do you think they are hiding?");
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(choice -> {
+            String message = controller.checkHidingSpot(choice);
+            console.setText(message);
+        });
     }
 
-    public void moveDown(){
-        if (characterView.getTranslateY() < 230)
-            characterView.setTranslateY(characterView.getTranslateY() + 10);
-        else{
-            setCentralImage(exits.get("Down"),true);
-            setCharacterPosition(0,0);
-        }
-    }
-    public void moveLeft(){
-        if (characterView.getTranslateX() > -250)
-            characterView.setTranslateX(characterView.getTranslateX() - 10);
-        else{
-            setCentralImage(exits.get("Left"), true);
-            setCharacterPosition(0,0);
+    public void showMemoryPuzzle(AmnesiaWitness witness) {
 
-        }
-    }
-    public void moveRight(){
-        if (characterView.getTranslateX() < 250)
-            characterView.setTranslateX(characterView.getTranslateX() + 10);
-        else{
-            setCentralImage(exits.get("Right"), true);
-            setCharacterPosition(0,0);
+        Stage popup = new Stage();
+        popup.setTitle("Memory Puzzle — " + witness.getName());
 
+        // Convert memory items to simple strings
+        ObservableList<String> items = FXCollections.observableArrayList();
+
+        for (AmnesiaItem item : witness.getMemoryItems()) {
+            items.add(item.getAttachedMemory());
         }
 
+        ListView<String> listView = new ListView<>(items);
+
+        Button swapBtn = new Button("Swap Items");
+        Button checkBtn = new Button("Check Order");
+        Button closeBtn = new Button("Close");
+        listView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        listView.setOnMouseClicked(event -> {
+            if (listView.getSelectionModel().getSelectedIndices().size() > 2) {
+                // Keep only the last two selections
+                ObservableList<Integer> selected = listView.getSelectionModel().getSelectedIndices();
+                int last = selected.get(selected.size() - 1);
+                int secondLast = selected.get(selected.size() - 2);
+
+                listView.getSelectionModel().clearSelection();
+                listView.getSelectionModel().selectIndices(secondLast, last);
+            }
+        });
+
+        // Swap buton
+        swapBtn.setOnAction(e -> {
+            ObservableList<Integer> selected =
+                    listView.getSelectionModel().getSelectedIndices();
+
+            if (selected.size() != 2) {
+                showAlert("Please select exactly TWO items to swap.");
+                return;
+            }
+
+            int i = selected.get(0);
+            int j = selected.get(1);
+              // sync GUI → model
+
+
+
+            String tmp = items.get(i);
+            items.set(i, items.get(j));
+            items.set(j, tmp);
+        });
+
+        // check button
+        checkBtn.setOnAction(e -> {
+
+            // Convert GUI list back to AmnesiaItem order
+            ArrayList<AmnesiaItem> newOrder = new ArrayList<>();
+
+            for (String memoryText : items) {
+                for (AmnesiaItem item : witness.getMemoryItems()) {
+                    if (item.getAttachedMemory().equals(memoryText)) {
+                        newOrder.add(item);
+                    }
+                }
+            }
+
+            if (witness.isCorrectOrder(newOrder)) {
+
+
+
+                // Build full story string
+                StringBuilder story = new StringBuilder();
+                for (AmnesiaItem item : witness.getSortedItems()) {
+                    story.append(item.getAttachedMemory()).append("\n");
+
+                }
+                String info = story.toString();
+
+                controller.getPlayer().setWitnessInfo(witness.getName(), info);
+                console.setText("Puzzle solved!\nFull Story:\n" + info );
+
+
+            }
+            else {
+                console.setText("Not correct — try again.");
+            }
+        });
+
+
+
+        closeBtn.setOnAction(e -> popup.close());
+
+        VBox root = new VBox(10, listView, swapBtn, checkBtn, closeBtn);
+        root.setPadding(new Insets(10));
+
+        popup.setScene(new Scene(root, 400, 500));
+        popup.show();
     }
+
+
+
+
+
+    private String handleSuspectChoice() {
+        Room room = controller.getCurrentRoom();
+
+        ArrayList<String> suspectNames = room.getSuspectNames();
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(suspectNames.get(0), suspectNames);
+        dialog.setTitle("Choose Suspect");
+        dialog.setHeaderText("Which suspect do you want to talk to?");
+        dialog.setContentText("Choose:");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String chosenName = result.get();
+            return  controller.talkToSuspect(chosenName);
+
+        }
+        return "Supsect not present";
+    }
+
+    private String handleWitness(){
+        Room room = controller.getCurrentRoom();
+        Witness witness = room.getWitness();
+
+        return  witness.interact();
+
+
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setHeaderText("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
+
+
+
+
 
     public void printToConsole(String message) {
         console.appendText(message + "\n");
@@ -256,31 +483,27 @@ public class GUI extends Application{
         characterView.setTranslateY(y);
     }
 
-    public void setCentralImage(ImageView room, boolean firsPerson){
+
+        private void updateInventoryChoiceBox() {
+            inventory.getItems().clear();
+            inventory.getItems().addAll(controller.getPlayerInventoryItemNames());
+        }
+
+
+    public void setCentralImage(String imagePath, int width , int height){
+        Room currentRoom = controller.getCurrentRoom();
+        ImageView room = new ImageView(imagePath);
+        room.setFitWidth(width);
+        room.setFitHeight(height);
 
         centralImage.getChildren().clear();
-
-        if (firsPerson) {
-            centralImage.getChildren().add(room);
-            dpad.setVisible(false);
-            dpad.setManaged(false);
-
-        }
-        else  {
-            centralImage.getChildren().addAll(room,characterView);
-            dpad.setVisible(true);
-            dpad.setManaged(true);
-        }
-
+        centralImage.getChildren().add(room);
+        console.clear();
+        printToConsole(currentRoom.getLongDescription());
     }
 
-    public void setExits(ImageView upRoom, ImageView downRoom, ImageView leftRoom, ImageView rightRoom){
-        exits.put("Left", leftRoom);
-        exits.put("Right", rightRoom);
-        exits.put("Up", upRoom);
-        exits.put("Down", downRoom);
 
-    }
+
 
 
 

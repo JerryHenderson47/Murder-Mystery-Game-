@@ -1,21 +1,22 @@
+import java.io.Serializable;
 import java.util.*;
 
 
-public class Suspect extends Character {
-    Scanner shcan = new Scanner(System.in);
-
+public class Suspect extends Character implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String victimRelationship;
     private String alby;
     private boolean isGuilty;
     private String motivation;
-    private int id;
 
-    public Suspect(String name,String victimRelationship, String description, String alby, boolean isGuilty,int id){
+
+    public Suspect(String name,String motivation,String victimRelationship, String description, String alby, boolean isGuilty){
         super(name, description);
         this.alby = alby;
         this.isGuilty = isGuilty;
-        this.id = id;
+
         this.victimRelationship = victimRelationship;
+        this.motivation = motivation;
 
     }
 
@@ -25,20 +26,16 @@ public class Suspect extends Character {
         return ("===" + getName() + "====\nMotivations:" + motivation + "\nVictim Relationship: " + victimRelationship + "\nAlby: " + alby +"\n");
 
     }
-    public void addSuspectInfo(Detective currentPlayer, Suspect suspect){
+
+    public boolean isGuilty(){
+        return isGuilty;
+    }
+
+
+    public void addSuspectInfo(Detective currentPlayer){
         currentPlayer.setSuspectInfo(getName(),getDetails());
     }
 
-    public void talk(){
-        System.out.println("This is suspect number " + id );
-        System.out.println("Would you like to see their details?");
-        System.out.println("Yes/No: ");
-        String choice = shcan.nextLine().toLowerCase().trim();
-        if(choice.equals("yes")){
-            System.out.println(getDetails());
-        }
 
-
-    }
 
 }

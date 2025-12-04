@@ -1,6 +1,8 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class Witness extends Character  {
+public abstract class Witness<T> extends Character implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String victimRelationship;
     private ArrayList<Item> inventory;
     private int trustLevel;
@@ -57,8 +59,9 @@ public abstract class Witness extends Character  {
     public abstract void addToInventory(Item item);
 
 
-    public abstract void interact();
-    public abstract void play();
+    public abstract String interact();
+    public abstract String play();
+    public abstract T getRequired();
 
 
 }

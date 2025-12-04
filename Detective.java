@@ -1,16 +1,16 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
+
 import java.io.*;
 
 public class Detective extends Character implements Serializable {
-    Scanner shcan = new Scanner(System.in);
-
+    private static final long serialVersionUID = 1L; //Ai generated in every class
     private ArrayList<Item> inventory;// creates the detectives inventory
     private Room currentRoom;
-    private Quest currentQuest;
+    private AbstractQuest currentQuest;
     private HashMap<String,String> witnessInfo;
     private HashMap<String,String> suspectInfo;
+    private boolean gameOver;
 
 
 
@@ -33,16 +33,20 @@ public class Detective extends Character implements Serializable {
 
 
     //getters
-    public Quest getCurrentQuest() {
+    public AbstractQuest getCurrentQuest() {
         return currentQuest;
     }
 
-    public void setCurrentQuest(Quest quest){
+    public void setCurrentQuest(AbstractQuest quest){
         this.currentQuest = quest;
     }
 
     public String getDescription() {
         return "Detective";
+    }
+
+    public boolean isGameOver(){
+        return gameOver;
     }
 
 
@@ -67,28 +71,12 @@ public class Detective extends Character implements Serializable {
     }
 
 
-    public void printCurrentInfo(){
-        System.out.println("Witness info(1) or Suspect info(2): ");
-        int choice = shcan.nextInt();
-        switch (choice){
-            case(1): for (var witness : witnessInfo.entrySet()) {
-                System.out.println(witness.getKey() + " : \n" + witness.getValue());
 
-            }
-                break;
-            case(2): for (var suspect : suspectInfo.entrySet()) {
-                System.out.println(suspect.getKey() + " : \n" + suspect.getValue());
 
-            }
-            break;
-        }
+
+    public void setGameOver(){
+
     }
-
-
-    public void setCurrentRoom(Room room){
-        this.currentRoom = room;
-    }
-
 
     public ArrayList<Item> getInventory(){
         return inventory;
@@ -101,6 +89,14 @@ public class Detective extends Character implements Serializable {
 
     public void removeFromInventory(Item item){
         inventory.remove(item);
+    }
+
+    public ArrayList<String> getInventoryItemNames(){
+        ArrayList<String> names = new ArrayList<>();
+        for (Item item : inventory){
+            names.add(item.getName());
+        }
+        return names;
     }
 
 
@@ -117,130 +113,134 @@ public class Detective extends Character implements Serializable {
             return sb.toString().trim();
     }
 
+    public String accuse(String accusation){
+        ArrayList<Suspect> suspects = currentRoom.getSuspectList();
+        for (Suspect suspect : suspects){
+            if(suspect.getName().equals(accusation) && suspect.isGuilty()){
+                gameOver = true;
+                return "Congratulations you hav solved the mystery " + accusation + " was the murderer all along!";
+            }
+
+        }
+        gameOver = true;
+        return accusation + " was not the suspect!!!!\nYou have failed\nThe killer walks away scot free\n===GAME OVER===";
+
+    }
+
+
 
     // function for movement
-    public void move(String direction) {
-        Room nextRoom = currentRoom.getExit(direction);// will make sense later
+    public boolean move(String direction) {
+        Room nextRoom = currentRoom.getExit(direction);
         if (nextRoom != null) {
-            currentRoom = nextRoom; // sets the current room to the one your in right now
-            System.out.println("You moved to: " + currentRoom.getDescription());
-        } else {
-            System.out.println("You can't go that way!");
+            currentRoom = nextRoom;
+            return true;
         }
+        return false;
     }
 
 
     //pick up an item in a room
-    public void pickUpItem(){
-        System.out.println("Items: " + currentRoom.getItemsNames());
-        System.out.println("What item: ");
-        String choice = shcan.nextLine().toLowerCase().trim();
-        boolean found = false;
+    public String pickUpItem(String choice){
         for (Item item : currentRoom.getItems()){ //cycles through items and checks if the choice matches
             if (item.getName().toLowerCase().equals(choice)){
                 addToInventory(item);
-                System.out.println( item.getName() + " Added to inventory");
                 currentRoom.checkItems(this);
-                found = true;
-                break;
+                return item.getName() + " Added to inventory\n\n" + currentRoom.getLongDescription();
             }
 
 
         }
-        if (!found)
-            System.out.println("That is not a valid item"); // if it is not in the room then it will say this
+        return "That is not a valid item"; // if it is not in the room then it will say this
 
 
     }
 
 
-    private String printInventoryDetails(){
-
-        System.out.println("Inventory: " + getInventoryNames());
-        System.out.println("What item: ");
-        return shcan.nextLine().toLowerCase().trim();
-
-    }
 
 
     // function to place an item
-    public void placeItem(){
+    public String placeItem(String choice){
 
-       String choice = printInventoryDetails();
-        boolean found = false;
+
         for (Item item : inventory) { //cycles through inventory and checks if the choice matches
             if (item.getName().toLowerCase().equals(choice)) {
                 currentRoom.addItem(item);
-                System.out.println(item.getName() + " Placed in " + currentRoom.getDescription());
                 inventory.remove(item);
-                found = true;
-                break;
+                return item.getName() + " Placed in " + currentRoom.getName() + "\n\n" + currentRoom.getLongDescription();
+
             }
         }
-        if (!found)
-            System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
+
+        return "That is not a valid item"; // if it is not in the inventory then it will say this
     }
 
 
     // to give an item
-    public void giveItem(){
-
-        String choice = printInventoryDetails();
-        boolean found = false;
+    public String giveItem(String choice){
         for (Item item : inventory) { //cycles through inventory and checks if the choice matches
-
             if (item.getName().toLowerCase().equals(choice)) {
-                System.out.println(item.getName() + " given to " + currentRoom.getWitness().getName());
                 removeFromInventory(item);
-                found = true;
-
                 // add to witness inventory
                 currentRoom.getWitness().addToInventory(item);
+
                 if (item instanceof AmnesiaItem && currentRoom.getWitness() instanceof AmnesiaWitness){
-                    System.out.println("Oh I remember,");
-                    System.out.println(((AmnesiaItem)item).getAttachedMemory());
+                    return  "Oh I remember," + ((AmnesiaItem)item).getAttachedMemory();
                 }
+                else {
+                    return item.getName() + " given to " + currentRoom.getWitness().getName();
+                }
+            }
+
+        }
+
+         return "That is not a valid item"; // if it is not in the inventory then it will say this
+    }
+    public String breakItem(String choice){
+        // Must be in a BreakQuest
+        if (!(currentQuest instanceof BreakQuest currentQuest)) {
+            return "You are not on a breaking quest!";
+        }
+
+        // Check player has the required tool
+        boolean toolFound = false;
+        for (Item item : inventory) {
+            if (item == currentQuest.getRequiredTool()) {
+                toolFound = true;
                 break;
-
             }
-
         }
-        if (!found)
-            System.out.println("That is not a valid item"); // if it is not in the inventory then it will say this
-    }
-    public void breakItem(){
-        if (currentQuest instanceof BreakQuest currentQuest) {
-            boolean toolFound = false;
-            for (Item item : inventory) {
-                if (item.equals(currentQuest.getRequiredTool()))
-                    toolFound = true;
-            }
+
+        if (!toolFound) {
+            return "You don't have the required tool to break the item!";
+        }
 
 
-            if (!toolFound) {
-                System.out.println("You don't have the required tool to break an item!");
-            }
+        choice = choice.toLowerCase().trim();
 
+        // Check the room for the target item
+        for (Item item : currentRoom.getItems()) {
+            if (item.getName().toLowerCase().equals(choice)) {
 
-            else if (toolFound) {
-                System.out.println("What item: ");
-                String choice = shcan.nextLine().toLowerCase().trim();
+                // If it is the *correct* break quest item
+                if (item == currentQuest.getTargetItem()) {
 
-                boolean targetItemFound = false;
-                for (Item item : currentRoom.getItems()) {
-                    if (item.getName().toLowerCase().equals(choice) && currentQuest.getTargetItem().getName().toLowerCase().equals(choice)) {
-                        System.out.println("You hava broken " + currentQuest.getTargetItem().getName());
-                        targetItemFound = true;
-                    }
-
-                }
-                if (targetItemFound) {
+                    // Complete quest
                     currentQuest.setBroken(true);
+
+                    // Remove item from room
+                    currentRoom.removeItem(item);
+
+                    return "You have broken " + item.getName() + "!";
                 }
-                else System.out.println("There are no breakable items in this room");
+
+                // Wrong item chosen
+                return "You can’t break that item for this quest!";
             }
         }
 
+        return "That item is not in this room.";
+    }
     }
 
 
@@ -252,7 +252,9 @@ public class Detective extends Character implements Serializable {
 
 
 
-    }
+
+
+
 
 
 

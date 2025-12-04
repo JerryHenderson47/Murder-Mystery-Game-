@@ -12,9 +12,8 @@ public class ImageAdresses {
     public static String livingRoom =
             "file:/C:/Users/hende/OneDrive%20-%20University%20of%20Limerick/ISE/Java%20Coding/Zork/images/Living%20Room/LivingRoomFirstPersonVIew.png";
 
-
-
-
-
     public static String detective = "file:/C:/Users/hende/OneDrive - University of Limerick/ISE/Java Coding/Zork/images/Detective.png";
+
+    public static String office = "file:/C:/Users/hende/OneDrive%20-%20University%20of%20Limerick/ISE/Java%20Coding/Zork/images/Office.png";
+
 }

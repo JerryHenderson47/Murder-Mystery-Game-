@@ -1,13 +1,14 @@
-import java.util.*;
+import java.io.Serializable;
 
-public  class QuestWitness extends Witness{
-    private Quest quest;
+public  class QuestWitness extends Witness<AbstractQuest> implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private AbstractQuest quest;
 
 
 
     public QuestWitness(String name, String victimRelationship,
                         String information, int trustLevel,
-                        String description,Quest quest,Detective player){
+                        String description, AbstractQuest quest, Detective player){
 
         super(name,victimRelationship,information, trustLevel,description, player);
         this.quest = quest;
@@ -24,43 +25,52 @@ public  class QuestWitness extends Witness{
     }
 
     @Override
-    public void play(){
-        quest.startQuest();
+    public String play(){
+        getPlayer().setCurrentQuest(quest);
+        return  quest.startQuest();
+
+    }
+    @Override
+    public AbstractQuest getRequired(){
+        return quest;
+    }
+
+    public AbstractQuest getQuest(){
+        return quest;
     }
 
 
 
+
     @Override
-    public void interact(){
-
-        if (!quest.isCompleted() && quest.isRunning()){
-            quest.endResult(this);
-            if(!quest.isCompleted()) {
-                System.out.println("Have you done it yet????");
-                System.out.println("Come on I am waiting");
-            }
-            else if(quest.isCompleted()){
-                getPlayer().setWitnessInfo(getName(), getInformation());
-            }
+    public String interact(){
+        // If quest already completed
+        if (quest.isCompleted()) {
+            return "Thanks for that, I hope I helped!";
         }
 
-        else if (!(quest.isRunning())) {
-            Scanner shcan = new Scanner(System.in);
-            System.out.println("Hi I'm " + getName());
-            System.out.println("I'd love to help but..... " + quest.giveProblem());
-            System.out.println("Would you like to help me?\n Yes/No: ");
-            String choice = shcan.nextLine().toLowerCase().trim();
-            if (choice.equals("yes")) {
-                System.out.println(quest.giveDetails());
-                getPlayer().setCurrentQuest(quest);
-                play();
+        // If quest has started but not finished
+        if (quest.isRunning()) {
+
+            // Ask the QUEST for the next message
+            String result = quest.endResult(this);
+
+            if (!quest.isCompleted()) {
+                return "Have you done it yet????\nCome on, I am waiting!";
             } else {
-                System.out.println("If you want my information you will have to do this for me!");
+                getPlayer().setWitnessInfo(getName(), getInformation());
+                return result + "\nThank you so much!";
             }
+
+
+
         }
-        else if(quest.isCompleted()){
-            System.out.println("Thanks for that, I hope I helped!");
-        }
+
+
+
+        // If quest has not started yet
+        return "Hi I'm " + getName() + "\n"
+                + "I'd love to help but... " + quest.giveProblem();
     }
 
 

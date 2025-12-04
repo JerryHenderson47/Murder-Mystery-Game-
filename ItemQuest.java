@@ -1,5 +1,7 @@
-public class ItemQuest extends Quest {
+import java.io.Serializable;
 
+public class ItemQuest extends AbstractQuest implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Item requiredItem;
 
 
@@ -27,24 +29,24 @@ public class ItemQuest extends Quest {
 
 
     @Override
-    public void endResult(Witness witness){
+    public String endResult(Witness witness){
             if (witness.getInventory().contains(requiredItem)) {
-                System.out.println("You actually find my " + requiredItem.getName());
-                System.out.println("Thank you so much!!!");
-                System.out.println("I suppose I owe you one....");
-                System.out.println("Ok so, here is what i know..." + witness.getInformation());
                 setIsRunning(false);
                 setCompleted(true);
-            } else System.out.println("You still don't have it???\n Come on man......");
+                return "You actually found my " + requiredItem.getName() + "\n" +
+                        "Thank you so much!!!\n" +
+                        "I suppose I owe you one....\n" +
+                        "Ok so, here is what I know... " + witness.getInformation();
+
+            } else return "You still don't have it???\n Come on man......";
 
     }
     @Override
-    public void startQuest(){
-        System.out.println("Thank you so much my " + requiredItem.getName() + "Means the world to me!");
-        System.out.println();
-        System.out.println("===Explore the house to try and find the " + requiredItem.getName() + "===" );
-        System.out.println("Once found, give the item to the witness to complete the quest");
+    public String startQuest(){
         setIsRunning(true);
+        return "Thank you so much, my " + requiredItem.getName() + "! It means the world to me!\n\n" +
+                "=== Explore the house to try and find the " + requiredItem.getName() + " ===\n" +
+                "Once found, give the item to the witness to complete the quest";
 
     }
 
