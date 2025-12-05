@@ -91,7 +91,7 @@ public class HideNSeekWitness extends Witness<ArrayList<HidingSpot>> implements 
 
     @Override
     public String play() {
-        return "===Find " + getName() + "t o retrive the information===";
+        return "===Find " + getName() + " to retrive the information===";
     }
 }
 

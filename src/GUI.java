@@ -14,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.*;
 
 public class GUI extends Application{
@@ -46,7 +47,7 @@ public class GUI extends Application{
 
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws IOException {
         window = stage;
         window.setWidth(1200);
         window.setHeight(900);
@@ -209,13 +210,10 @@ public class GUI extends Application{
                     boolean answer = false;
                     Witness witness = controller.getCurrentRoom().getWitness();
                    console.setText(handleWitness());
-                    if (witness instanceof QuestWitness qw) {
-                        if (!qw.getQuest().isRunning() && !qw.getQuest().isCompleted()) {
-                            answer = ConfirmBox.display("Witness", "Help Witness?");
-                        }
-                    }
+                    answer = ConfirmBox.display("Witness", "Help Witness?");
 
-                       // handle the diffenrt types of witnesses
+
+                    // handle the diffenrt types of witnesses
                        if (answer && controller.isAmnesiaWitness()) {
                            console.setText(witness.play());
                            showMemoryPuzzle(controller.getAmnesiaWitness());

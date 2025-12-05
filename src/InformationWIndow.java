@@ -3,16 +3,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.paint.*;
-import javafx.scene.image.Image;
-import javafx.scene.text.Text;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Line;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
 import java.util.HashMap;

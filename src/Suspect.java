@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.*;
 
 
 public class Suspect extends Character implements Serializable {
